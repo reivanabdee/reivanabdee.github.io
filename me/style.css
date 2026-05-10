@@ -134,7 +134,7 @@ body {
   align-items: center;
   gap: 24px;
 }
-.socials { display: flex; gap: 18px; font-size: 1.2rem; }
+.socials { display: flex; gap: 18px; font-size: 1.15rem; align-items: center; }
 .line {
   height: 2px;
   flex: 1;
@@ -150,38 +150,44 @@ body {
   .navbar {
     flex-direction: row;
     align-items: flex-start;
-    gap: 12px;
+    justify-content: space-between;
+    gap: 10px;
     padding-top: 22px;
   }
   .nav-left {
-    width: 100%;
-    flex-direction: column;
+    width: auto;
+    flex: 1;
+    flex-direction: row;
     align-items: flex-start;
-    gap: 12px;
+    gap: 14px;
   }
-  .menu-btn { font-size: 1.5rem; }
+  .menu-btn {
+    font-size: 1.5rem;
+    margin-top: 2px;
+  }
   .nav-links {
     display: grid;
-    grid-template-columns: repeat(2, minmax(110px, 1fr));
-    gap: 10px 16px;
-    width: 100%;
+    grid-template-columns: repeat(2, minmax(92px, 1fr));
+    gap: 8px 14px;
+    width: auto;
   }
   .nav-link {
     text-align: left;
-    font-size: .7rem;
-    letter-spacing: .12rem;
+    font-size: .68rem;
+    letter-spacing: .11rem;
   }
   .brand {
-    position: absolute;
-    top: 72px;
-    left: 20px;
+    position: static;
+    margin-top: 3px;
+    margin-left: auto;
     font-size: 1rem;
+    white-space: nowrap;
   }
   .hero {
     height: auto;
     min-height: calc(100vh - 140px);
     align-items: flex-start;
-    padding-top: 170px;
+    padding-top: 70px;
     padding-bottom: 90px;
   }
   .slider { width: 100%; }
