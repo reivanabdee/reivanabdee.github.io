@@ -1,0 +1,152 @@
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  overflow: hidden;
+  font-family: 'Montserrat', sans-serif;
+  color: rgba(255,255,255,.92);
+  background:
+    radial-gradient(circle at 78% 88%, rgba(35, 244, 229, 0.95), transparent 28%),
+    radial-gradient(circle at 32% 82%, rgba(142, 67, 255, 0.9), transparent 22%),
+    radial-gradient(circle at 62% 88%, rgba(74, 162, 255, 0.55), transparent 18%),
+    linear-gradient(135deg, #2f244f 0%, #322650 38%, #312755 58%, #2b365d 72%, #224764 100%);
+  position: relative;
+}
+.background-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: .85;
+  pointer-events: none;
+}
+.glow-a { width: 320px; height: 320px; background: rgba(166, 69, 255, .55); left: 12%; top: 20%; }
+.glow-b { width: 420px; height: 420px; background: rgba(24, 240, 228, .45); right: 4%; bottom: -5%; }
+.glow-c { width: 300px; height: 300px; background: rgba(92, 170, 255, .35); left: 42%; bottom: 8%; }
+.starfield { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.shooting-star {
+  position: absolute;
+  width: 140px;
+  height: 4px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.95));
+  box-shadow: 0 0 14px rgba(255,255,255,.75);
+  transform: rotate(-42deg);
+  animation: shoot linear forwards;
+}
+.shooting-star::before {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  transform: translateY(-50%);
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 18px rgba(173, 250, 255, 1);
+}
+@keyframes shoot {
+  from { transform: translate3d(120px, -120px, 0) rotate(-42deg); opacity: 0; }
+  10% { opacity: 1; }
+  to { transform: translate3d(-520px, 520px, 0) rotate(-42deg); opacity: 0; }
+}
+.navbar, .footer-bar, .hero { position: relative; z-index: 2; }
+.navbar {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 28px 54px 0;
+}
+.nav-left { display: flex; align-items: center; gap: 22px; }
+.menu-btn, .nav-link, .arrow-btn, .cta-btn {
+  background: transparent; color: inherit; border: none; font: inherit; cursor: pointer;
+}
+.menu-btn { font-size: 1.4rem; opacity: .82; }
+.nav-links { display: flex; gap: 28px; flex-wrap: wrap; }
+.nav-link {
+  text-transform: uppercase; font-size: .72rem; letter-spacing: .14rem; opacity: .62;
+  transition: opacity .25s ease, transform .25s ease;
+}
+.nav-link.active, .nav-link:hover { opacity: 1; transform: translateY(-1px); }
+.brand { font-size: 1.1rem; letter-spacing: .04rem; opacity: .95; }
+.hero {
+  height: calc(100vh - 120px);
+  display: flex; align-items: center;
+  padding: 0 54px;
+}
+.slider {
+  width: min(820px, 100%);
+  position: relative;
+}
+.slide {
+  display: none;
+  animation: fadeSlide .45s ease;
+}
+.slide.active { display: block; }
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateX(22px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+.eyebrow {
+  display: inline-block;
+  font-size: 3rem;
+  font-weight: 600;
+  letter-spacing: .5rem;
+  margin-bottom: 2.6rem;
+}
+.columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(220px, 1fr));
+  gap: 38px;
+  margin-bottom: 2rem;
+}
+.columns.single { grid-template-columns: 1fr; max-width: 600px; }
+.columns h2 {
+  font-size: 1.35rem;
+  font-weight: 300;
+  letter-spacing: .3rem;
+  margin: 0 0 1rem;
+}
+.columns p {
+  margin: 0;
+  max-width: 260px;
+  line-height: 1.7;
+  font-size: .88rem;
+  color: rgba(255,255,255,.68);
+}
+.actions { display: flex; align-items: center; gap: 10px; }
+.arrow-btn, .cta-btn {
+  border: 1px solid rgba(255,255,255,.75);
+  color: rgba(255,255,255,.95);
+  height: 34px;
+}
+.arrow-btn { width: 48px; font-size: 1.2rem; }
+.cta-btn {
+  padding: 0 20px;
+  text-transform: uppercase;
+  letter-spacing: .18rem;
+  font-size: .72rem;
+}
+.footer-bar {
+  position: absolute;
+  left: 54px;
+  right: 54px;
+  bottom: 28px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.socials { display: flex; gap: 18px; font-size: 1.2rem; }
+.line {
+  height: 2px;
+  flex: 1;
+  background: rgba(255,255,255,.55);
+}
+@media (max-width: 900px) {
+  .eyebrow { font-size: 2.2rem; letter-spacing: .28rem; }
+  .columns { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .navbar, .hero, .footer-bar { padding-left: 20px; padding-right: 20px; }
+  .navbar { flex-direction: column; align-items: flex-start; gap: 18px; }
+  .nav-links { gap: 14px; }
+  .eyebrow { font-size: 1.6rem; letter-spacing: .18rem; }
+}

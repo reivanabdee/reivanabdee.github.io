@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Swipe Landing Page</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="background-glow glow-a"></div>
+  <div class="background-glow glow-b"></div>
+  <div class="background-glow glow-c"></div>
+  <div class="starfield" id="starfield"></div>
+
+  <header class="navbar">
+    <div class="nav-left">
+      <button class="menu-btn" aria-label="Open menu">☰</button>
+      <nav class="nav-links">
+        <button class="nav-link active" data-slide="0">Home</button>
+        <button class="nav-link" data-slide="1">Gallery</button>
+        <button class="nav-link" data-slide="2">About Us</button>
+        <button class="nav-link" data-slide="3">FAQ</button>
+        <button class="nav-link" data-slide="4">Join Us</button>
+      </nav>
+    </div>
+    <div class="brand">Companyname</div>
+  </header>
+
+  <main class="hero">
+    <div class="slider" id="slider">
+      <section class="slide active">
+        <span class="eyebrow">2020 NEW YEAR</span>
+        <div class="columns">
+          <div>
+            <h2>Lorem Ipsum</h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>
+          </div>
+          <div>
+            <h2>Dolor Sit</h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed diam nonummy nibh euismod.</p>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="arrow-btn" id="prevBtn">‹</button>
+          <button class="arrow-btn" id="nextBtn">›</button>
+          <button class="cta-btn">Click Here</button>
+        </div>
+      </section>
+
+      <section class="slide">
+        <span class="eyebrow">GALLERY MODE</span>
+        <div class="columns single">
+          <div>
+            <h2>Swipe Without Refresh</h2>
+            <p>Setiap menu pindah halus tanpa reload halaman. Cocok buat landing page modern yang mau tetap ringan tapi terasa hidup.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <span class="eyebrow">ABOUT EXPERIENCE</span>
+        <div class="columns single">
+          <div>
+            <h2>Gradient Neon Atmosphere</h2>
+            <p>Background dibuat dengan gradasi ungu, cyan, dan glow blur yang mirip referensi, lalu dikasih animasi bintang jatuh untuk nuansa dreamy sci-fi.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <span class="eyebrow">FAQ</span>
+        <div class="columns single">
+          <div>
+            <h2>Fast, Fluid, Reusable</h2>
+            <p>HTML, CSS, dan JavaScript-nya dipisah rapi, jadi gampang dimodif, dipasang ke repo, atau dijadikan template branding lain.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <span class="eyebrow">JOIN US</span>
+        <div class="columns single">
+          <div>
+            <h2>Ready to Customize</h2>
+            <p>Tinggal ganti teks, logo, tombol CTA, dan link sosial. Struktur animasi dan slider-nya sudah siap dipakai buat project asli.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="footer-bar">
+    <div class="socials">
+      <span>◔</span>
+      <span>f</span>
+      <span>◎</span>
+    </div>
+    <div class="line"></div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
