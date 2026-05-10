@@ -46,3 +46,20 @@ setInterval(createStar, 1200);
 for (let i = 0; i < 5; i++) {
   setTimeout(createStar, i * 500);
 }
+
+const menuBtn = document.querySelector('.menu-btn');
+const navLinksEl = document.getElementById('navLinks');
+if (menuBtn && navLinksEl) {
+  menuBtn.addEventListener('click', () => {
+    if (window.innerWidth <= 640) {
+      const hidden = navLinksEl.style.display === 'none';
+      navLinksEl.style.display = hidden ? 'grid' : 'none';
+    }
+  });
+  if (window.innerWidth <= 640) {
+    navLinksEl.style.display = 'grid';
+  }
+  window.addEventListener('resize', () => {
+    navLinksEl.style.display = window.innerWidth <= 640 ? 'grid' : 'flex';
+  });
+}
