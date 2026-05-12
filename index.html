@@ -1,162 +1,1003 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>reivanabdee</title>
-  <meta name="description" content="Portfolio and GitHub profile for reivanabdee" />
-  <link rel="icon" href="data:," />
-  <link rel="stylesheet" href="./assets/css/reivanabdee.css" />
+  <title>Reivan Abdee — Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #020510;
+      --surface:   rgba(255,255,255,0.04);
+      --border:    rgba(255,255,255,0.08);
+      --text:      #e8e4f0;
+      --muted:     rgba(232,228,240,0.45);
+      --accent:    #a78bfa;
+      --accent2:   #67e8f9;
+      --gold:      #fbbf24;
+      --glow:      rgba(167,139,250,0.25);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Space Mono', monospace;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ───── GALAXY CANVAS ───── */
+    #galaxy {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* ───── NEBULA LAYERS ───── */
+    .nebula {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .nebula-1 {
+      width: clamp(300px, 50vw, 700px);
+      height: clamp(300px, 50vw, 700px);
+      background: radial-gradient(circle, rgba(88,28,220,0.18) 0%, transparent 70%);
+      top: -10%; left: -10%;
+      animation: nebulaDrift 25s ease-in-out infinite alternate;
+    }
+    .nebula-2 {
+      width: clamp(200px, 40vw, 600px);
+      height: clamp(200px, 40vw, 600px);
+      background: radial-gradient(circle, rgba(6,182,212,0.12) 0%, transparent 70%);
+      bottom: -10%; right: -10%;
+      animation: nebulaDrift 30s ease-in-out infinite alternate-reverse;
+    }
+    .nebula-3 {
+      width: clamp(150px, 30vw, 400px);
+      height: clamp(150px, 30vw, 400px);
+      background: radial-gradient(circle, rgba(251,191,36,0.08) 0%, transparent 70%);
+      top: 40%; left: 50%;
+      animation: nebulaDrift 20s ease-in-out infinite alternate;
+    }
+    @keyframes nebulaDrift {
+      0%   { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(40px, 30px) scale(1.15); }
+    }
+
+    /* ───── LAYOUT ───── */
+    .wrap { position: relative; z-index: 1; }
+
+    /* ───── NAV ───── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.25rem clamp(1.5rem, 5vw, 4rem);
+      background: rgba(2,5,16,0.6);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+      font-weight: 300;
+      letter-spacing: 0.08em;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--accent); }
+    .nav-links {
+      display: flex;
+      gap: clamp(1rem, 3vw, 2.5rem);
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.3s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -3px; left: 0;
+      width: 0; height: 1px;
+      background: var(--accent);
+      transition: width 0.3s;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-links a:hover::after { width: 100%; }
+
+    /* ───── HERO ───── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      padding: clamp(5rem, 10vw, 8rem) clamp(1.5rem, 8vw, 8rem) clamp(3rem, 6vw, 5rem);
+    }
+    .hero-tag {
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--accent2);
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.3s forwards;
+    }
+    .hero-tag::before {
+      content: '';
+      width: 32px; height: 1px;
+      background: var(--accent2);
+    }
+    .hero-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3rem, 10vw, 8rem);
+      font-weight: 300;
+      line-height: 1.05;
+      letter-spacing: -0.01em;
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.5s forwards;
+    }
+    .hero-name em {
+      font-style: italic;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      font-size: clamp(0.75rem, 1.5vw, 0.9rem);
+      color: var(--muted);
+      max-width: 480px;
+      line-height: 1.9;
+      letter-spacing: 0.02em;
+      margin-bottom: 3rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.7s forwards;
+    }
+    .hero-cta {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.9s forwards;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.75rem;
+      border-radius: 2px;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: all 0.3s;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #0a0520;
+    }
+    .btn-primary:hover {
+      background: #c4b5fd;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px var(--glow);
+    }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+    .btn-outline:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    /* ───── SCROLL INDICATOR ───── */
+    .scroll-hint {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      opacity: 0;
+      animation: fadeIn 1s 1.5s forwards;
+    }
+    .scroll-hint span {
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .scroll-line {
+      width: 1px;
+      height: 50px;
+      background: linear-gradient(to bottom, var(--muted), transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+    @keyframes scrollPulse {
+      0%,100% { opacity: 0.3; transform: scaleY(1); }
+      50%      { opacity: 1;   transform: scaleY(0.6) translateY(10px); }
+    }
+
+    /* ───── SECTIONS ───── */
+    section {
+      padding: clamp(4rem, 10vw, 8rem) clamp(1.5rem, 8vw, 8rem);
+    }
+    .section-label {
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .section-label::before {
+      content: '';
+      width: 24px; height: 1px;
+      background: var(--accent);
+    }
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 300;
+      line-height: 1.2;
+      margin-bottom: 3rem;
+      letter-spacing: -0.01em;
+    }
+
+    /* ───── ABOUT ───── */
+    #about .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(2rem, 5vw, 5rem);
+      align-items: start;
+    }
+    @media (max-width: 700px) {
+      #about .about-grid { grid-template-columns: 1fr; }
+    }
+    .about-text p {
+      color: var(--muted);
+      line-height: 2;
+      font-size: 0.8rem;
+      letter-spacing: 0.02em;
+      margin-bottom: 1.25rem;
+    }
+    .about-text p strong { color: var(--text); font-weight: 700; }
+    .stat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+    .stat-card {
+      padding: 1.5rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .stat-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-4px);
+    }
+    .stat-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.5rem;
+      font-weight: 300;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 0.25rem;
+    }
+    .stat-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ───── SKILLS ───── */
+    #skills {
+      background: rgba(255,255,255,0.015);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+      gap: 1.25rem;
+    }
+    .skill-card {
+      padding: 1.75rem 1.5rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s;
+    }
+    .skill-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s;
+    }
+    .skill-card:hover::before { transform: scaleX(1); }
+    .skill-card:hover {
+      border-color: rgba(167,139,250,0.3);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+    }
+    .skill-icon {
+      font-size: 1.75rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+    .skill-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.15rem;
+      font-weight: 400;
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.01em;
+    }
+    .skill-desc {
+      font-size: 0.68rem;
+      color: var(--muted);
+      line-height: 1.8;
+      letter-spacing: 0.03em;
+    }
+
+    /* ───── PROJECTS ───── */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+      gap: 1.5rem;
+    }
+    .project-card {
+      padding: 2rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+    .project-card .glow-bg {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(167,139,250,0.1) 0%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+    .project-card:hover .glow-bg { opacity: 1; }
+    .project-card:hover {
+      border-color: rgba(167,139,250,0.35);
+      transform: translateY(-5px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+    .project-num {
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      font-family: 'Space Mono', monospace;
+    }
+    .project-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem;
+      font-weight: 400;
+      margin-bottom: 0.75rem;
+      position: relative;
+    }
+    .project-desc {
+      font-size: 0.72rem;
+      color: var(--muted);
+      line-height: 1.9;
+      letter-spacing: 0.02em;
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      position: relative;
+    }
+    .tag {
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.65rem;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      color: var(--muted);
+    }
+    .project-arrow {
+      position: absolute;
+      top: 2rem; right: 2rem;
+      font-size: 1.2rem;
+      color: var(--muted);
+      transition: all 0.3s;
+    }
+    .project-card:hover .project-arrow {
+      color: var(--accent);
+      transform: translate(4px, -4px);
+    }
+
+    /* ───── CONTACT ───── */
+    #contact {
+      text-align: center;
+    }
+    #contact .section-label { justify-content: center; }
+    #contact .section-label::before { display: none; }
+    .contact-sub {
+      font-size: 0.78rem;
+      color: var(--muted);
+      max-width: 420px;
+      margin: 0 auto 3rem;
+      line-height: 1.9;
+      letter-spacing: 0.02em;
+    }
+    .contact-email {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.5rem, 4vw, 2.5rem);
+      font-weight: 300;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      text-decoration: none;
+      display: inline-block;
+      margin-bottom: 3rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+      transition: border-color 0.3s, color 0.3s;
+    }
+    .contact-email:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .social-link {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .social-link:hover { color: var(--accent2); }
+
+    /* ───── FOOTER ───── */
+    footer {
+      padding: 2rem clamp(1.5rem, 8vw, 8rem);
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ───── DIVIDER ───── */
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+      margin: 0;
+    }
+
+    /* ───── ANIMATIONS ───── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    /* ───── HAMBURGER (mobile) ───── */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+    }
+    .hamburger span {
+      display: block;
+      width: 22px; height: 1px;
+      background: var(--text);
+      transition: all 0.3s;
+    }
+    @media (max-width: 600px) {
+      .hamburger { display: flex; }
+      .nav-links {
+        display: none;
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(2,5,16,0.97);
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 2.5rem;
+        z-index: 99;
+      }
+      .nav-links.open { display: flex; }
+      .nav-links a { font-size: 0.85rem; }
+    }
+
+    /* ───── CURSOR ───── */
+    .cursor {
+      display: none;
+      position: fixed;
+      width: 8px; height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transition: transform 0.15s, opacity 0.3s;
+      mix-blend-mode: screen;
+    }
+    .cursor-ring {
+      display: none;
+      position: fixed;
+      width: 32px; height: 32px;
+      border: 1px solid rgba(167,139,250,0.5);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transition: width 0.3s, height 0.3s, opacity 0.3s;
+    }
+    @media (pointer: fine) {
+      .cursor, .cursor-ring { display: block; }
+      body { cursor: none; }
+      a, button { cursor: none; }
+    }
+
+    /* ───── REVEAL ANIMATION ───── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s, transform 0.8s;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
 </head>
 <body>
-  <div class="bg"></div>
 
-  <header class="topbar">
-    <a class="brand" href="#top" aria-label="reivanabdee">
-      <span class="brand__reivan">reivan</span><span class="brand__abdee">abdee</span>
-    </a>
+<!-- Custom cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
 
-    <div class="topbar__right">
-      <a class="pill pill--ghost" href="#about">About Me</a>
-      <a class="pill pill--ghost" href="#social">Social Media</a>
+<!-- Nebula background -->
+<div class="nebula nebula-1"></div>
+<div class="nebula nebula-2"></div>
+<div class="nebula nebula-3"></div>
+
+<!-- Galaxy canvas -->
+<canvas id="galaxy"></canvas>
+
+<div class="wrap">
+
+  <!-- NAV -->
+  <nav>
+    <a href="#hero" class="nav-logo">Reivan<span>.</span>Abdee</a>
+    <button class="hamburger" id="burger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero" style="position:relative;">
+    <div class="hero-tag">Portfolio — 2025</div>
+    <h1 class="hero-name">Reivan<br /><em>Abdee</em></h1>
+    <p class="hero-sub">
+      Developer &amp; creator crafting digital experiences that blend elegant code with thoughtful design — somewhere between the stars and the screen.
+    </p>
+    <div class="hero-cta">
+      <a href="#projects" class="btn btn-primary">View Work ↓</a>
+      <a href="#contact" class="btn btn-outline">Get in Touch</a>
     </div>
-  </header>
+    <div class="scroll-hint">
+      <div class="scroll-line"></div>
+      <span>Scroll</span>
+    </div>
+  </section>
 
-  <main id="top" class="wrap">
-    <section class="hero">
-      <div class="hero__left">
-        <div class="kicker">GitHub Portfolio</div>
-        <h1 class="title">
-          Bangun hal yang kepake, rapi, dan bisa diautomate.
-        </h1>
-        <p class="subtitle">
-          Gue <strong>Reivan (reivanabdee)</strong>. Fokus: automation, backend stuff, dan tools yang bikin kerjaan lebih ringan.
-        </p>
-
-        <div class="cta">
-          <a class="btn" href="https://github.com/reivanabdee" target="_blank" rel="noreferrer">GitHub</a>
-          <a class="btn btn--soft" href="#projects">Projects</a>
-        </div>
-
-        <div class="chips">
-          <span class="chip">Automation</span>
-          <span class="chip">Backend</span>
-          <span class="chip">Tooling</span>
-          <span class="chip">Server</span>
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="section-label">About Me</div>
+    <h2 class="section-title reveal">Turning ideas into<br /><em style="font-family:'Cormorant Garamond',serif;font-style:italic;">digital reality.</em></h2>
+    <div class="about-grid">
+      <div class="about-text reveal">
+        <p>Halo! Saya <strong>Reivan Abdee</strong>, seorang developer yang passionate dalam membangun produk digital yang bermakna. Saya percaya bahwa kode yang baik bukan hanya soal fungsi, tetapi juga soal keindahan dan pengalaman pengguna.</p>
+        <p>Dengan keahlian di berbagai teknologi web, saya selalu berusaha menghadirkan solusi yang tidak hanya <strong>bekerja dengan baik</strong>, tetapi juga <strong>terasa menyenangkan</strong> untuk digunakan.</p>
+        <p>Di luar coding, saya gemar menjelajahi hal-hal baru dan terus belajar untuk tumbuh menjadi developer yang lebih baik setiap harinya.</p>
+        <div style="margin-top:2rem;">
+          <a href="#contact" class="btn btn-outline">Let's Collaborate →</a>
         </div>
       </div>
-
-      <div class="hero__right">
-        <div class="card">
-          <div class="card__top">
-            <div class="avatar" aria-hidden="true">
-              <span>RA</span>
-            </div>
-            <div class="card__meta">
-              <div class="card__name">reivanabdee</div>
-              <div class="card__desc">Karawang, Indonesia</div>
-            </div>
-          </div>
-
-          <div class="stats">
-            <div class="stat">
-              <div class="stat__label">About Me</div>
-              <div class="stat__value">Builder mindset</div>
-            </div>
-            <div class="stat">
-              <div class="stat__label">Social Media</div>
-              <div class="stat__value">@reivanabdee</div>
-            </div>
-          </div>
-
-          <div class="card__body" id="about">
-            <h2 class="h2">About Me</h2>
-            <ul class="list">
-              <li>Building automation, backend stuff, and tools that make work less annoying.</li>
-              <li>Fokus ke hal-hal yang bikin workflow lebih rapi, minim kerja manual.</li>
-            </ul>
-          </div>
-
+      <div class="stat-grid reveal">
+        <div class="stat-card">
+          <div class="stat-num">3+</div>
+          <div class="stat-label">Years Experience</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">20+</div>
+          <div class="stat-label">Projects Shipped</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">10+</div>
+          <div class="stat-label">Technologies</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">∞</div>
+          <div class="stat-label">Curiosity</div>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section id="projects" class="section">
-      <div class="section__head">
-        <h2 class="h2">Projects</h2>
-        <p class="muted">My mini repository</p>
+  <div class="divider"></div>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="section-label">Expertise</div>
+    <h2 class="section-title reveal">What I bring<br /><em style="font-family:'Cormorant Garamond',serif;font-style:italic;">to the table.</em></h2>
+    <div class="skills-grid">
+      <div class="skill-card reveal">
+        <span class="skill-icon">⚡</span>
+        <div class="skill-name">Frontend Dev</div>
+        <div class="skill-desc">React, Vue, HTML/CSS, Tailwind — membangun UI yang responsif dan performant.</div>
       </div>
-
-      <div class="grid">
-        <a class="tile" href="https://github.com/reivanabdee" target="_blank" rel="noreferrer">
-          <div class="tile__title">Automation & Workflows</div>
-          <div class="tile__desc">Script untuk input laporan, rapihin data, dan ngurangin kerja manual.</div>
-          <div class="tile__tags">
-            <span class="tag">Python</span><span class="tag">Excel</span><span class="tag">Automation</span>
-          </div>
-        </a>
-
-        <a class="tile" href="https://github.com/reivanabdee?tab=repositories" target="_blank" rel="noreferrer">
-          <div class="tile__title">Repos</div>
-          <div class="tile__desc">Koleksi repo publik.</div>
-          <div class="tile__tags">
-            <span class="tag">GitHub</span><span class="tag">Tooling</span>
-          </div>
-        </a>
-
-        <a class="tile" href="https://reivanabdee.me" target="_blank" rel="noreferrer">
-          <div class="tile__title">Website</div>
-          <div class="tile__desc">reivanabdee.me</div>
-          <div class="tile__tags">
-            <span class="tag">Portfolio</span><span class="tag">Pages</span>
-          </div>
-        </a>
+      <div class="skill-card reveal" style="transition-delay:0.1s">
+        <span class="skill-icon">🔧</span>
+        <div class="skill-name">Backend Dev</div>
+        <div class="skill-desc">Node.js, Express, REST API — arsitektur server yang scalable dan efisien.</div>
       </div>
-    </section>
-
-    <section class="section">
-      <div class="section__head">
-        <h2 class="h2">README</h2>
-        <!-- <p class="muted"></p> -->
+      <div class="skill-card reveal" style="transition-delay:0.2s">
+        <span class="skill-icon">🎨</span>
+        <div class="skill-name">UI/UX Design</div>
+        <div class="skill-desc">Figma, design systems — pengalaman pengguna yang intuitif dan estetis.</div>
       </div>
-      <div class="codebox">
-<pre><code>Hi, I'm Reivan (reivanabdee)
-
-Building automation, backend stuff, and tools that make work less annoying.
-
-GitHub: https://github.com/reivanabdee
-</code></pre>
+      <div class="skill-card reveal" style="transition-delay:0.3s">
+        <span class="skill-icon">🗄️</span>
+        <div class="skill-name">Database</div>
+        <div class="skill-desc">MySQL, PostgreSQL, MongoDB — pengelolaan data yang terstruktur dan optimal.</div>
       </div>
-    </section>
+      <div class="skill-card reveal" style="transition-delay:0.4s">
+        <span class="skill-icon">☁️</span>
+        <div class="skill-name">DevOps</div>
+        <div class="skill-desc">Docker, Git, CI/CD — deployment yang smooth dan workflow yang efisien.</div>
+      </div>
+      <div class="skill-card reveal" style="transition-delay:0.5s">
+        <span class="skill-icon">📱</span>
+        <div class="skill-name">Mobile Dev</div>
+        <div class="skill-desc">React Native — aplikasi mobile cross-platform yang native-feel.</div>
+      </div>
+    </div>
+  </section>
 
-  </main>
+  <div class="divider"></div>
 
-  <footer class="footer">
-    <div class="footer__left">© <span id="y"></span> reivanabdee</div>
-    <div class="footer__right">
-      <a class="social" href="https://www.tiktok.com/@reivanabdee" target="_blank" rel="noreferrer" aria-label="TikTok">
-        <!-- Bootstrap icon: tiktok -->
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
-          <path d="M9 0h1a4.5 4.5 0 0 0 4.5 4.5V6A6.5 6.5 0 0 1 10 4.1V11a5 5 0 1 1-5-5h1v1.9H5a3.1 3.1 0 1 0 3.1 3.1V0Z"/>
-        </svg>
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="section-label">Work</div>
+    <h2 class="section-title reveal">Selected<br /><em style="font-family:'Cormorant Garamond',serif;font-style:italic;">projects.</em></h2>
+    <div class="projects-grid">
+      <a href="#" class="project-card reveal">
+        <div class="glow-bg"></div>
+        <div class="project-arrow">↗</div>
+        <div class="project-num">01</div>
+        <div class="project-title">Project Satu</div>
+        <div class="project-desc">Deskripsi singkat tentang proyek ini — apa yang dibuat, masalah yang diselesaikan, dan impact-nya.</div>
+        <div class="project-tags">
+          <span class="tag">React</span>
+          <span class="tag">Node.js</span>
+          <span class="tag">MongoDB</span>
+        </div>
       </a>
-      <a class="social" href="https://twitter.com/reivanabdee" target="_blank" rel="noreferrer" aria-label="Twitter">
-        <!-- Bootstrap icon: twitter-x -->
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
-          <path d="M12.6 0h2.4L9.8 6.4 16 16h-4.8L7.5 10.2 2.7 16H.3l5.7-6.9L0 0h4.9l3.3 5.3L12.6 0Zm-.8 14.6h1.3L4.2 1.3H2.8l9 13.3Z"/>
-        </svg>
+      <a href="#" class="project-card reveal" style="transition-delay:0.1s">
+        <div class="glow-bg"></div>
+        <div class="project-arrow">↗</div>
+        <div class="project-num">02</div>
+        <div class="project-title">Project Dua</div>
+        <div class="project-desc">Deskripsi singkat tentang proyek ini — apa yang dibuat, masalah yang diselesaikan, dan impact-nya.</div>
+        <div class="project-tags">
+          <span class="tag">Vue</span>
+          <span class="tag">Express</span>
+          <span class="tag">PostgreSQL</span>
+        </div>
       </a>
-      <a class="social" href="https://instagram.com/reivanabdee" target="_blank" rel="noreferrer" aria-label="Instagram">
-        <!-- Bootstrap icon: instagram -->
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
-          <path d="M8 0C5.829 0 5.555.01 4.703.048c-.85.039-1.432.174-1.943.372A3.9 3.9 0 0 0 1.37 1.37c-.449.449-.753.99-.95 1.39-.198.51-.333 1.092-.372 1.943C.01 5.555 0 5.829 0 8c0 2.171.01 2.445.048 3.297.039.851.174 1.432.372 1.943.197.4.501.941.95 1.39a3.9 3.9 0 0 0 1.39.95c.51.198 1.092.333 1.943.372C5.555 15.99 5.829 16 8 16c2.171 0 2.445-.01 3.297-.048.851-.039 1.432-.174 1.943-.372.4-.197.941-.501 1.39-.95a3.9 3.9 0 0 0 .95-1.39c.198-.51.333-1.092.372-1.943C15.99 10.445 16 10.171 16 8c0-2.171-.01-2.445-.048-3.297-.039-.851-.174-1.432-.372-1.943a3.9 3.9 0 0 0-.95-1.39 3.9 3.9 0 0 0-1.39-.95c-.51-.198-1.092-.333-1.943-.372C10.445.01 10.171 0 8 0Zm0 1.44c2.134 0 2.385.008 3.228.047.78.036 1.203.166 1.485.275.373.145.64.318.92.598.28.28.453.547.598.92.11.282.239.705.275 1.485.039.843.047 1.094.047 3.228s-.008 2.385-.047 3.228c-.036.78-.166 1.203-.275 1.485a2.46 2.46 0 0 1-.598.92 2.46 2.46 0 0 1-.92.598c-.282.11-.705.239-1.485.275-.843.039-1.094.047-3.228.047s-2.385-.008-3.228-.047c-.78-.036-1.203-.166-1.485-.275a2.46 2.46 0 0 1-.92-.598 2.46 2.46 0 0 1-.598-.92c-.11-.282-.239-.705-.275-1.485C1.448 10.385 1.44 10.134 1.44 8s.008-2.385.047-3.228c.036-.78.166-1.203.275-1.485.145-.373.318-.64.598-.92.28-.28.547-.453.92-.598.282-.11.705-.239 1.485-.275C5.615 1.448 5.866 1.44 8 1.44Z"/>
-          <path d="M8 3.9A4.1 4.1 0 1 0 8 12.1 4.1 4.1 0 0 0 8 3.9Zm0 6.76A2.66 2.66 0 1 1 8 5.34a2.66 2.66 0 0 1 0 5.32Z"/>
-          <path d="M12.77 3.68a.96.96 0 1 0 0 1.92.96.96 0 0 0 0-1.92Z"/>
-        </svg>
+      <a href="#" class="project-card reveal" style="transition-delay:0.2s">
+        <div class="glow-bg"></div>
+        <div class="project-arrow">↗</div>
+        <div class="project-num">03</div>
+        <div class="project-title">Project Tiga</div>
+        <div class="project-desc">Deskripsi singkat tentang proyek ini — apa yang dibuat, masalah yang diselesaikan, dan impact-nya.</div>
+        <div class="project-tags">
+          <span class="tag">React Native</span>
+          <span class="tag">Firebase</span>
+        </div>
       </a>
     </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="section-label">Contact</div>
+    <h2 class="section-title reveal">Let's build<br /><em style="font-family:'Cormorant Garamond',serif;font-style:italic;">something great.</em></h2>
+    <p class="contact-sub reveal">Punya proyek menarik atau ingin berkolaborasi? Saya selalu terbuka untuk diskusi dan peluang baru.</p>
+    <a href="mailto:hello@reivanabdee.me" class="contact-email reveal">hello@reivanabdee.me</a>
+    <div class="social-links reveal">
+      <a href="#" class="social-link">GitHub</a>
+      <a href="#" class="social-link">LinkedIn</a>
+      <a href="#" class="social-link">Instagram</a>
+      <a href="#" class="social-link">Twitter</a>
+    </div>
+  </section>
+
+  <footer>
+    <span>© 2025 Reivan Abdee</span>
+    <span style="letter-spacing:0.05em;">Crafted with ♡ among the stars</span>
   </footer>
 
-  <script src="./assets/js/reivanabdee.js"></script>
+</div><!-- /wrap -->
+
+<script>
+/* ─── GALAXY / STARS / FALLING STARS ─── */
+(function() {
+  const canvas = document.getElementById('galaxy');
+  const ctx = canvas.getContext('2d');
+  let W, H, stars = [], shooters = [], dpr = window.devicePixelRatio || 1;
+
+  function resize() {
+    W = window.innerWidth;
+    H = window.innerHeight;
+    canvas.width  = W * dpr;
+    canvas.height = H * dpr;
+    canvas.style.width  = W + 'px';
+    canvas.style.height = H + 'px';
+    ctx.scale(dpr, dpr);
+    initStars();
+  }
+
+  /* Static stars */
+  function initStars() {
+    stars = [];
+    const count = Math.floor((W * H) / 4000);
+    for (let i = 0; i < count; i++) {
+      stars.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        r: Math.random() * 1.2 + 0.2,
+        a: Math.random(),
+        speed: Math.random() * 0.004 + 0.001,
+        phase: Math.random() * Math.PI * 2,
+        hue: Math.random() < 0.15 ? (Math.random() < 0.5 ? 200 : 280) : 0,
+        sat: Math.random() < 0.15 ? 80 : 0,
+      });
+    }
+  }
+
+  /* Shooting stars */
+  function spawnShooter() {
+    const angle = (Math.random() * 30 + 20) * Math.PI / 180; // 20–50deg
+    const speed = Math.random() * 8 + 6;
+    shooters.push({
+      x: Math.random() * W * 0.8,
+      y: Math.random() * H * 0.4,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed,
+      len: Math.random() * 120 + 60,
+      alpha: 1,
+      width: Math.random() * 1.2 + 0.5,
+      life: 0,
+      maxLife: Math.random() * 60 + 40,
+      trail: [],
+    });
+  }
+
+  let frameCount = 0;
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    frameCount++;
+
+    /* Milky way smear */
+    const cx = W * 0.5, cy = H * 0.45;
+    const grd = ctx.createRadialGradient(cx, cy, 0, cx, cy, W * 0.55);
+    grd.addColorStop(0, 'rgba(80,40,140,0.07)');
+    grd.addColorStop(0.5, 'rgba(40,20,80,0.04)');
+    grd.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = grd;
+    ctx.fillRect(0, 0, W, H);
+
+    /* Static stars */
+    for (const s of stars) {
+      s.phase += s.speed;
+      const alpha = s.a * (0.5 + 0.5 * Math.sin(s.phase));
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      if (s.hue) {
+        ctx.fillStyle = `hsla(${s.hue},${s.sat}%,80%,${alpha})`;
+      } else {
+        ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+      }
+      ctx.fill();
+    }
+
+    /* Spawn shooting stars randomly */
+    if (frameCount % 90 === 0 && Math.random() < 0.6) spawnShooter();
+    if (frameCount % 200 === 0 && Math.random() < 0.4) spawnShooter(); // occasional burst
+
+    /* Draw shooting stars */
+    for (let i = shooters.length - 1; i >= 0; i--) {
+      const s = shooters[i];
+      s.trail.push({ x: s.x, y: s.y });
+      if (s.trail.length > 20) s.trail.shift();
+
+      s.x += s.vx;
+      s.y += s.vy;
+      s.life++;
+      s.alpha = 1 - s.life / s.maxLife;
+
+      if (s.trail.length > 1) {
+        ctx.beginPath();
+        ctx.moveTo(s.trail[0].x, s.trail[0].y);
+        for (let t = 1; t < s.trail.length; t++) {
+          ctx.lineTo(s.trail[t].x, s.trail[t].y);
+        }
+        const tailGrad = ctx.createLinearGradient(
+          s.trail[0].x, s.trail[0].y,
+          s.x, s.y
+        );
+        tailGrad.addColorStop(0, `rgba(167,139,250,0)`);
+        tailGrad.addColorStop(0.5, `rgba(167,139,250,${s.alpha * 0.4})`);
+        tailGrad.addColorStop(1, `rgba(220,200,255,${s.alpha})`);
+        ctx.strokeStyle = tailGrad;
+        ctx.lineWidth = s.width;
+        ctx.lineCap = 'round';
+        ctx.stroke();
+      }
+
+      /* Head glow */
+      const headGlow = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, 6);
+      headGlow.addColorStop(0, `rgba(240,220,255,${s.alpha})`);
+      headGlow.addColorStop(1, `rgba(167,139,250,0)`);
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, 6, 0, Math.PI * 2);
+      ctx.fillStyle = headGlow;
+      ctx.fill();
+
+      if (s.life >= s.maxLife || s.x > W + 50 || s.y > H + 50) {
+        shooters.splice(i, 1);
+      }
+    }
+
+    requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize', resize);
+  resize();
+  draw();
+})();
+
+/* ─── CURSOR ─── */
+(function() {
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx - 4 + 'px';
+    cursor.style.top  = my - 4 + 'px';
+  });
+
+  function animateRing() {
+    rx += (mx - rx - 16) * 0.12;
+    ry += (my - ry - 16) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top  = ry + 'px';
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.transform = 'scale(2.5)';
+      ring.style.width = ring.style.height = '48px';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.transform = 'scale(1)';
+      ring.style.width = ring.style.height = '32px';
+    });
+  });
+})();
+
+/* ─── SCROLL REVEAL ─── */
+(function() {
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+})();
+
+/* ─── MOBILE NAV ─── */
+(function() {
+  const burger = document.getElementById('burger');
+  const nav = document.getElementById('navLinks');
+  burger.addEventListener('click', () => nav.classList.toggle('open'));
+  nav.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => nav.classList.remove('open'));
+  });
+})();
+</script>
 </body>
 </html>
