@@ -33,7 +33,6 @@
       overflow-x: hidden;
     }
 
-    /* ───── GALAXY CANVAS ───── */
     #galaxy {
       position: fixed;
       inset: 0;
@@ -41,7 +40,6 @@
       pointer-events: none;
     }
 
-    /* ───── NEBULA LAYERS ───── */
     .nebula {
       position: fixed;
       border-radius: 50%;
@@ -75,10 +73,8 @@
       100% { transform: translate(40px, 30px) scale(1.15); }
     }
 
-    /* ───── LAYOUT ───── */
     .wrap { position: relative; z-index: 1; }
 
-    /* ───── NAV ───── */
     nav {
       position: fixed;
       top: 0; left: 0; right: 0;
@@ -125,7 +121,6 @@
     .nav-links a:hover { color: var(--text); }
     .nav-links a:hover::after { width: 100%; }
 
-    /* ───── HERO ───── */
     #hero {
       min-height: 100vh;
       display: flex;
@@ -220,7 +215,6 @@
       transform: translateY(-2px);
     }
 
-    /* ───── SCROLL INDICATOR ───── */
     .scroll-hint {
       position: absolute;
       bottom: 2.5rem;
@@ -250,7 +244,6 @@
       50%      { opacity: 1;   transform: scaleY(0.6) translateY(10px); }
     }
 
-    /* ───── SECTIONS ───── */
     section {
       padding: clamp(4rem, 10vw, 8rem) clamp(1.5rem, 8vw, 8rem);
     }
@@ -278,7 +271,6 @@
       letter-spacing: -0.01em;
     }
 
-    /* ───── ABOUT ───── */
     #about .about-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -327,7 +319,6 @@
       color: var(--muted);
     }
 
-    /* ───── SKILLS ───── */
     #skills {
       background: rgba(255,255,255,0.015);
       border-top: 1px solid var(--border);
@@ -382,7 +373,6 @@
       letter-spacing: 0.03em;
     }
 
-    /* ───── PROJECTS ───── */
     .projects-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
@@ -463,7 +453,6 @@
       transform: translate(4px, -4px);
     }
 
-    /* ───── CONTACT ───── */
     #contact {
       text-align: center;
     }
@@ -510,7 +499,6 @@
     }
     .social-link:hover { color: var(--accent2); }
 
-    /* ───── FOOTER ───── */
     footer {
       padding: 2rem clamp(1.5rem, 8vw, 8rem);
       border-top: 1px solid var(--border);
@@ -526,7 +514,6 @@
       z-index: 1;
     }
 
-    /* ───── DIVIDER ───── */
     .divider {
       width: 100%;
       height: 1px;
@@ -534,7 +521,6 @@
       margin: 0;
     }
 
-    /* ───── ANIMATIONS ───── */
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(20px); }
       to   { opacity: 1; transform: translateY(0); }
@@ -544,13 +530,14 @@
       to   { opacity: 1; }
     }
 
-    /* ───── HAMBURGER (mobile) ───── */
     .hamburger {
       display: none;
       flex-direction: column;
       gap: 5px;
       cursor: pointer;
       padding: 4px;
+      background: transparent;
+      border: 0;
     }
     .hamburger span {
       display: block;
@@ -575,7 +562,6 @@
       .nav-links a { font-size: 0.85rem; }
     }
 
-    /* ───── CURSOR ───── */
     .cursor {
       display: none;
       position: fixed;
@@ -603,7 +589,6 @@
       a, button { cursor: none; }
     }
 
-    /* ───── REVEAL ANIMATION ───── */
     .reveal {
       opacity: 0;
       transform: translateY(30px);
@@ -616,22 +601,14 @@
   </style>
 </head>
 <body>
-
-<!-- Custom cursor -->
 <div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cursorRing"></div>
-
-<!-- Nebula background -->
 <div class="nebula nebula-1"></div>
 <div class="nebula nebula-2"></div>
 <div class="nebula nebula-3"></div>
-
-<!-- Galaxy canvas -->
 <canvas id="galaxy"></canvas>
 
 <div class="wrap">
-
-  <!-- NAV -->
   <nav>
     <a href="#hero" class="nav-logo">Reivan<span>.</span>Abdee</a>
     <button class="hamburger" id="burger" aria-label="Menu">
@@ -645,12 +622,11 @@
     </ul>
   </nav>
 
-  <!-- HERO -->
   <section id="hero" style="position:relative;">
     <div class="hero-tag">Portfolio — 2025</div>
     <h1 class="hero-name">Reivan<br /><em>Abdee</em></h1>
     <p class="hero-sub">
-      Developer &amp; creator crafting digital experiences that blend elegant code with thoughtful design — somewhere between the stars and the screen.
+      Developer &amp; creator crafting digital experiences that blend elegant code with thoughtful design, somewhere between the stars and the screen.
     </p>
     <div class="hero-cta">
       <a href="#projects" class="btn btn-primary">View Work ↓</a>
@@ -662,7 +638,6 @@
     </div>
   </section>
 
-  <!-- ABOUT -->
   <section id="about">
     <div class="section-label">About Me</div>
     <h2 class="section-title reveal">Turning ideas into<br /><em style="font-family:'Cormorant Garamond',serif;font-style:italic;">digital reality.</em></h2>
@@ -698,7 +673,6 @@
 
   <div class="divider"></div>
 
-  <!-- SKILLS -->
   <section id="skills">
     <div class="section-label">Expertise</div>
     <h2 class="section-title reveal">What I bring<br /><em style="font-family:'Cormorant Garamond',serif;font-style:italic;">to the table.</em></h2>
@@ -706,39 +680,38 @@
       <div class="skill-card reveal">
         <span class="skill-icon">⚡</span>
         <div class="skill-name">Frontend Dev</div>
-        <div class="skill-desc">React, Vue, HTML/CSS, Tailwind — membangun UI yang responsif dan performant.</div>
+        <div class="skill-desc">React, Vue, HTML/CSS, Tailwind , membangun UI yang responsif dan performant.</div>
       </div>
       <div class="skill-card reveal" style="transition-delay:0.1s">
         <span class="skill-icon">🔧</span>
         <div class="skill-name">Backend Dev</div>
-        <div class="skill-desc">Node.js, Express, REST API — arsitektur server yang scalable dan efisien.</div>
+        <div class="skill-desc">Node.js, Express, REST API , arsitektur server yang scalable dan efisien.</div>
       </div>
       <div class="skill-card reveal" style="transition-delay:0.2s">
         <span class="skill-icon">🎨</span>
         <div class="skill-name">UI/UX Design</div>
-        <div class="skill-desc">Figma, design systems — pengalaman pengguna yang intuitif dan estetis.</div>
+        <div class="skill-desc">Figma, design systems , pengalaman pengguna yang intuitif dan estetis.</div>
       </div>
       <div class="skill-card reveal" style="transition-delay:0.3s">
         <span class="skill-icon">🗄️</span>
         <div class="skill-name">Database</div>
-        <div class="skill-desc">MySQL, PostgreSQL, MongoDB — pengelolaan data yang terstruktur dan optimal.</div>
+        <div class="skill-desc">MySQL, PostgreSQL, MongoDB , pengelolaan data yang terstruktur dan optimal.</div>
       </div>
       <div class="skill-card reveal" style="transition-delay:0.4s">
         <span class="skill-icon">☁️</span>
         <div class="skill-name">DevOps</div>
-        <div class="skill-desc">Docker, Git, CI/CD — deployment yang smooth dan workflow yang efisien.</div>
+        <div class="skill-desc">Docker, Git, CI/CD , deployment yang smooth dan workflow yang efisien.</div>
       </div>
       <div class="skill-card reveal" style="transition-delay:0.5s">
         <span class="skill-icon">📱</span>
         <div class="skill-name">Mobile Dev</div>
-        <div class="skill-desc">React Native — aplikasi mobile cross-platform yang native-feel.</div>
+        <div class="skill-desc">React Native , aplikasi mobile cross-platform yang native-feel.</div>
       </div>
     </div>
   </section>
 
   <div class="divider"></div>
 
-  <!-- PROJECTS -->
   <section id="projects">
     <div class="section-label">Work</div>
     <h2 class="section-title reveal">Selected<br /><em style="font-family:'Cormorant Garamond',serif;font-style:italic;">projects.</em></h2>
@@ -748,7 +721,7 @@
         <div class="project-arrow">↗</div>
         <div class="project-num">01</div>
         <div class="project-title">Project Satu</div>
-        <div class="project-desc">Deskripsi singkat tentang proyek ini — apa yang dibuat, masalah yang diselesaikan, dan impact-nya.</div>
+        <div class="project-desc">Deskripsi singkat tentang proyek ini , apa yang dibuat, masalah yang diselesaikan, dan impact-nya.</div>
         <div class="project-tags">
           <span class="tag">React</span>
           <span class="tag">Node.js</span>
@@ -760,7 +733,7 @@
         <div class="project-arrow">↗</div>
         <div class="project-num">02</div>
         <div class="project-title">Project Dua</div>
-        <div class="project-desc">Deskripsi singkat tentang proyek ini — apa yang dibuat, masalah yang diselesaikan, dan impact-nya.</div>
+        <div class="project-desc">Deskripsi singkat tentang proyek ini , apa yang dibuat, masalah yang diselesaikan, dan impact-nya.</div>
         <div class="project-tags">
           <span class="tag">Vue</span>
           <span class="tag">Express</span>
@@ -772,7 +745,7 @@
         <div class="project-arrow">↗</div>
         <div class="project-num">03</div>
         <div class="project-title">Project Tiga</div>
-        <div class="project-desc">Deskripsi singkat tentang proyek ini — apa yang dibuat, masalah yang diselesaikan, dan impact-nya.</div>
+        <div class="project-desc">Deskripsi singkat tentang proyek ini , apa yang dibuat, masalah yang diselesaikan, dan impact-nya.</div>
         <div class="project-tags">
           <span class="tag">React Native</span>
           <span class="tag">Firebase</span>
@@ -783,7 +756,6 @@
 
   <div class="divider"></div>
 
-  <!-- CONTACT -->
   <section id="contact">
     <div class="section-label">Contact</div>
     <h2 class="section-title reveal">Let's build<br /><em style="font-family:'Cormorant Garamond',serif;font-style:italic;">something great.</em></h2>
@@ -801,11 +773,9 @@
     <span>© 2025 Reivan Abdee</span>
     <span style="letter-spacing:0.05em;">Crafted with ♡ among the stars</span>
   </footer>
-
-</div><!-- /wrap -->
+</div>
 
 <script>
-/* ─── GALAXY / STARS / FALLING STARS ─── */
 (function() {
   const canvas = document.getElementById('galaxy');
   const ctx = canvas.getContext('2d');
@@ -822,7 +792,6 @@
     initStars();
   }
 
-  /* Static stars */
   function initStars() {
     stars = [];
     const count = Math.floor((W * H) / 4000);
@@ -840,9 +809,8 @@
     }
   }
 
-  /* Shooting stars */
   function spawnShooter() {
-    const angle = (Math.random() * 30 + 20) * Math.PI / 180; // 20–50deg
+    const angle = (Math.random() * 30 + 20) * Math.PI / 180;
     const speed = Math.random() * 8 + 6;
     shooters.push({
       x: Math.random() * W * 0.8,
@@ -863,7 +831,6 @@
     ctx.clearRect(0, 0, W, H);
     frameCount++;
 
-    /* Milky way smear */
     const cx = W * 0.5, cy = H * 0.45;
     const grd = ctx.createRadialGradient(cx, cy, 0, cx, cy, W * 0.55);
     grd.addColorStop(0, 'rgba(80,40,140,0.07)');
@@ -872,7 +839,6 @@
     ctx.fillStyle = grd;
     ctx.fillRect(0, 0, W, H);
 
-    /* Static stars */
     for (const s of stars) {
       s.phase += s.speed;
       const alpha = s.a * (0.5 + 0.5 * Math.sin(s.phase));
@@ -886,11 +852,9 @@
       ctx.fill();
     }
 
-    /* Spawn shooting stars randomly */
     if (frameCount % 90 === 0 && Math.random() < 0.6) spawnShooter();
-    if (frameCount % 200 === 0 && Math.random() < 0.4) spawnShooter(); // occasional burst
+    if (frameCount % 200 === 0 && Math.random() < 0.4) spawnShooter();
 
-    /* Draw shooting stars */
     for (let i = shooters.length - 1; i >= 0; i--) {
       const s = shooters[i];
       s.trail.push({ x: s.x, y: s.y });
@@ -920,7 +884,6 @@
         ctx.stroke();
       }
 
-      /* Head glow */
       const headGlow = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, 6);
       headGlow.addColorStop(0, `rgba(240,220,255,${s.alpha})`);
       headGlow.addColorStop(1, `rgba(167,139,250,0)`);
@@ -942,7 +905,6 @@
   draw();
 })();
 
-/* ─── CURSOR ─── */
 (function() {
   const cursor = document.getElementById('cursor');
   const ring = document.getElementById('cursorRing');
@@ -975,7 +937,6 @@
   });
 })();
 
-/* ─── SCROLL REVEAL ─── */
 (function() {
   const obs = new IntersectionObserver((entries) => {
     entries.forEach(e => {
@@ -989,7 +950,6 @@
   document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 })();
 
-/* ─── MOBILE NAV ─── */
 (function() {
   const burger = document.getElementById('burger');
   const nav = document.getElementById('navLinks');
