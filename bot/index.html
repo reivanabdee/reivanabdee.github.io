@@ -1,0 +1,1566 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BOT CONTROL ROOM // J.A.R.V.I.S</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Exo+2:wght@300;400;600;700;800&family=Orbitron:wght@400;600;700;900&display=swap');
+
+:root {
+  --bg-void: #020508;
+  --bg-deep: #060c12;
+  --bg-panel: #080f18;
+  --bg-card: #0a1520;
+  --bg-card-hover: #0e1d2b;
+  --border: #0f2235;
+  --border-mid: #163045;
+  --border-bright: #1d4060;
+  --border-glow: rgba(0,210,255,0.25);
+
+  --cyan: #00d2ff;
+  --cyan-dim: rgba(0,210,255,0.15);
+  --cyan-glow: rgba(0,210,255,0.5);
+  --blue: #0066ff;
+  --purple: #7b2fff;
+
+  --standby: #00e676;
+  --standby-dim: rgba(0,230,118,0.12);
+  --working: #ffb300;
+  --working-dim: rgba(255,179,0,0.12);
+  --error: #ff2d55;
+  --error-dim: rgba(255,45,85,0.12);
+  --offline: #2a4050;
+
+  --text-bright: #e0f4ff;
+  --text-primary: #8db8d0;
+  --text-dim: #2a4a5e;
+  --text-ghost: #142030;
+
+  --grid: rgba(0,210,255,0.03);
+  --hex-opacity: 0.015;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg-void);
+  font-family: 'Exo 2', sans-serif;
+  color: var(--text-bright);
+  min-height: 100vh;
+  overflow-x: hidden;
+  cursor: crosshair;
+}
+
+/* ── HEX GRID BACKGROUND ── */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 60px 60px;
+  z-index: 0; pointer-events: none;
+}
+
+/* ── SCAN LINE OVERLAY ── */
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background: repeating-linear-gradient(
+    0deg, transparent, transparent 3px,
+    rgba(0,210,255,0.012) 3px, rgba(0,210,255,0.012) 4px
+  );
+  z-index: 0; pointer-events: none;
+}
+
+/* ── AMBIENT GLOW ORBS ── */
+.ambient {
+  position: fixed; pointer-events: none; z-index: 0;
+}
+.ambient-1 {
+  width: 600px; height: 600px;
+  top: -200px; left: -150px;
+  background: radial-gradient(circle, rgba(0,100,255,0.06) 0%, transparent 70%);
+  animation: drift1 12s ease-in-out infinite;
+}
+.ambient-2 {
+  width: 500px; height: 500px;
+  top: 40%; right: -100px;
+  background: radial-gradient(circle, rgba(0,210,255,0.05) 0%, transparent 70%);
+  animation: drift2 15s ease-in-out infinite;
+}
+.ambient-3 {
+  width: 400px; height: 400px;
+  bottom: -100px; left: 30%;
+  background: radial-gradient(circle, rgba(123,47,255,0.04) 0%, transparent 70%);
+  animation: drift3 18s ease-in-out infinite;
+}
+@keyframes drift1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(30px,20px)} }
+@keyframes drift2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-20px,30px)} }
+@keyframes drift3 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(25px,-20px)} }
+
+/* ── CORNER BRACKET MIXIN ── */
+.bracket-box {
+  position: relative;
+}
+.bracket-box::before, .bracket-box::after {
+  content: '';
+  position: absolute;
+  width: 16px; height: 16px;
+  border-color: var(--cyan);
+  border-style: solid;
+}
+.bracket-box::before {
+  top: -1px; left: -1px;
+  border-width: 2px 0 0 2px;
+}
+.bracket-box::after {
+  bottom: -1px; right: -1px;
+  border-width: 0 2px 2px 0;
+}
+
+.wrapper { position: relative; z-index: 1; }
+
+/* ══════════════════════════════════════
+   HEADER
+══════════════════════════════════════ */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 36px;
+  height: 64px;
+  border-bottom: 1px solid var(--border-mid);
+  background: linear-gradient(180deg, rgba(6,12,18,0.98) 0%, rgba(6,12,18,0.92) 100%);
+  backdrop-filter: blur(12px);
+  position: sticky; top: 0; z-index: 100;
+  overflow: hidden;
+}
+
+/* Header top accent line */
+header::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%, var(--cyan) 20%, var(--blue) 50%, var(--cyan) 80%, transparent 100%);
+  opacity: 0.6;
+}
+
+/* Header scanner animation */
+header::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%; right: 0; bottom: 0;
+  width: 80px;
+  background: linear-gradient(90deg, transparent, rgba(0,210,255,0.04), transparent);
+  animation: header-scan 6s linear infinite;
+}
+@keyframes header-scan { to { left: 100%; } }
+
+.logo-block {
+  display: flex; align-items: center; gap: 16px;
+  position: relative; z-index: 1;
+}
+
+.logo-icon {
+  width: 42px; height: 42px;
+  border: 1px solid var(--cyan);
+  border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  background: linear-gradient(135deg, rgba(0,210,255,0.08), rgba(0,102,255,0.04));
+  box-shadow: 0 0 20px var(--cyan-glow), inset 0 0 15px rgba(0,210,255,0.06);
+  animation: logo-pulse 4s ease-in-out infinite;
+  position: relative;
+}
+.logo-icon::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border: 1px solid transparent;
+  border-top-color: var(--cyan);
+  border-radius: 4px;
+  animation: spin-slow 8s linear infinite;
+}
+@keyframes logo-pulse {
+  0%,100% { box-shadow: 0 0 18px rgba(0,210,255,0.3), inset 0 0 12px rgba(0,210,255,0.06); }
+  50% { box-shadow: 0 0 32px rgba(0,210,255,0.55), inset 0 0 20px rgba(0,210,255,0.12); }
+}
+@keyframes spin-slow { to { transform: rotate(360deg); } }
+
+.logo-text-block { display: flex; flex-direction: column; }
+.logo-text {
+  font-family: 'Orbitron', monospace;
+  font-weight: 900; font-size: 16px;
+  letter-spacing: 4px;
+  color: var(--cyan);
+  text-shadow: 0 0 20px var(--cyan-glow);
+  line-height: 1;
+}
+.logo-sub {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px; color: var(--text-dim);
+  letter-spacing: 2.5px; margin-top: 3px;
+}
+
+.header-center {
+  position: absolute; left: 50%; transform: translateX(-50%);
+  display: flex; align-items: center; gap: 20px;
+  z-index: 1;
+}
+
+.header-tag {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px; letter-spacing: 3px;
+  color: var(--text-dim);
+  padding: 3px 10px;
+  border: 1px solid var(--border-mid);
+  border-radius: 2px;
+}
+
+.signal-bars {
+  display: flex; align-items: flex-end; gap: 2px; height: 14px;
+}
+.signal-bar {
+  width: 3px; background: var(--cyan);
+  border-radius: 1px;
+  opacity: 0.7;
+}
+.signal-bar:nth-child(1) { height: 4px; }
+.signal-bar:nth-child(2) { height: 7px; }
+.signal-bar:nth-child(3) { height: 10px; }
+.signal-bar:nth-child(4) { height: 14px; animation: signal-flicker 2s ease-in-out infinite; }
+@keyframes signal-flicker { 50% { opacity: 0.3; } }
+
+.header-right {
+  display: flex; align-items: center; gap: 20px;
+  position: relative; z-index: 1;
+}
+
+.clock-block { text-align: right; }
+.clock {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 24px; color: var(--cyan);
+  letter-spacing: 3px;
+  text-shadow: 0 0 16px var(--cyan-glow);
+  line-height: 1;
+}
+.date-display {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px; color: var(--text-dim);
+  letter-spacing: 2px; margin-top: 3px;
+}
+
+.system-badge {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 14px;
+  border: 1px solid rgba(0,230,118,0.25);
+  border-radius: 3px;
+  background: rgba(0,230,118,0.04);
+  position: relative;
+  overflow: hidden;
+}
+.system-badge::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(0,230,118,0.04), transparent);
+  animation: badge-scan 3s linear infinite;
+}
+@keyframes badge-scan { to { transform: translateX(200%); } }
+
+.status-pulse {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--standby);
+  box-shadow: 0 0 10px var(--standby);
+  animation: pulse-ring 2s ease-in-out infinite;
+  position: relative;
+}
+.status-pulse::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1px solid rgba(0,230,118,0.4);
+  animation: ring-expand 2s ease-in-out infinite;
+}
+@keyframes pulse-ring { 50% { opacity: 0.5; } }
+@keyframes ring-expand {
+  0% { transform: scale(0.8); opacity: 0.8; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+
+.status-text {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px; color: var(--standby);
+  letter-spacing: 2.5px;
+}
+
+.refresh-ring {
+  width: 16px; height: 16px;
+  border: 1.5px solid transparent;
+  border-top-color: var(--cyan);
+  border-right-color: rgba(0,210,255,0.3);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  opacity: 0; transition: opacity 0.3s;
+  flex-shrink: 0;
+}
+.refresh-ring.active { opacity: 1; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ══════════════════════════════════════
+   STATS BAR
+══════════════════════════════════════ */
+.stats-bar {
+  display: flex;
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--border);
+  padding: 0 36px;
+  position: relative;
+  overflow: hidden;
+}
+.stats-bar::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-bright), transparent);
+}
+
+.stat-item {
+  flex: 1;
+  padding: 14px 20px;
+  border-right: 1px solid var(--border);
+  display: flex; align-items: center; gap: 14px;
+  position: relative;
+  transition: background 0.3s;
+}
+.stat-item:last-child { border-right: none; }
+.stat-item:hover { background: rgba(0,210,255,0.02); }
+
+.stat-icon {
+  font-size: 18px; opacity: 0.6;
+  flex-shrink: 0;
+}
+
+.stat-value {
+  font-family: 'Orbitron', monospace;
+  font-size: 26px; font-weight: 700;
+  line-height: 1;
+  transition: all 0.4s ease;
+}
+.stat-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 8px; color: var(--text-dim);
+  letter-spacing: 2px; margin-top: 3px;
+}
+.stat-sub {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 8px; color: var(--text-dim);
+  letter-spacing: 1px; margin-top: 1px;
+}
+
+.stat-value.cyan { color: var(--cyan); text-shadow: 0 0 14px var(--cyan-glow); }
+.stat-value.green { color: var(--standby); text-shadow: 0 0 14px rgba(0,230,118,0.5); }
+.stat-value.yellow { color: var(--working); text-shadow: 0 0 14px rgba(255,179,0,0.5); }
+.stat-value.red { color: var(--error); text-shadow: 0 0 14px rgba(255,45,85,0.5); }
+
+/* ══════════════════════════════════════
+   MAIN LAYOUT
+══════════════════════════════════════ */
+.main {
+  padding: 28px 36px;
+  display: grid;
+  gap: 24px;
+}
+
+/* ── SECTION HEADER ── */
+.section-header {
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: 16px;
+}
+.section-pip {
+  width: 3px; height: 20px;
+  background: linear-gradient(180deg, var(--cyan), var(--blue));
+  border-radius: 2px;
+  box-shadow: 0 0 8px var(--cyan);
+}
+.section-title {
+  font-family: 'Orbitron', monospace;
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 4px; color: var(--cyan);
+  text-shadow: 0 0 10px rgba(0,210,255,0.3);
+}
+.section-line {
+  flex: 1; height: 1px;
+  background: linear-gradient(90deg, var(--border-bright) 0%, var(--border) 40%, transparent 100%);
+}
+.section-count {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px; color: var(--text-dim);
+  letter-spacing: 1px;
+  padding: 2px 8px;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+}
+
+/* ══════════════════════════════════════
+   MASTER AGENT PANEL
+══════════════════════════════════════ */
+.master-panel {
+  background: linear-gradient(135deg, rgba(10,21,32,0.95), rgba(8,15,24,0.95));
+  border: 1px solid var(--border-mid);
+  border-radius: 6px;
+  padding: 22px 28px;
+  display: flex; align-items: center; gap: 24px;
+  position: relative; overflow: hidden;
+}
+
+.master-panel::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--blue), var(--cyan), var(--purple), var(--cyan), var(--blue));
+  background-size: 200% 100%;
+  animation: gradient-shift 4s linear infinite;
+  box-shadow: 0 0 20px var(--cyan);
+}
+@keyframes gradient-shift { to { background-position: -200% 0; } }
+
+/* Corner brackets */
+.master-panel::after {
+  content: '';
+  position: absolute;
+  bottom: 0; right: 0;
+  width: 60px; height: 60px;
+  border-top: 1px solid var(--border-mid);
+  border-left: 1px solid var(--border-mid);
+  border-radius: 0;
+}
+
+.master-panel-corner-tl {
+  position: absolute;
+  top: -1px; left: -1px;
+  width: 14px; height: 14px;
+  border-top: 2px solid var(--cyan);
+  border-left: 2px solid var(--cyan);
+}
+.master-panel-corner-br {
+  position: absolute;
+  bottom: -1px; right: -1px;
+  width: 14px; height: 14px;
+  border-bottom: 2px solid var(--cyan);
+  border-right: 2px solid var(--cyan);
+}
+
+/* Particle dots background */
+.master-bg-dots {
+  position: absolute; inset: 0;
+  background-image: radial-gradient(circle, rgba(0,210,255,0.08) 1px, transparent 1px);
+  background-size: 24px 24px;
+  opacity: 0.4;
+}
+
+.master-avatar {
+  width: 72px; height: 72px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, rgba(0,100,255,0.12), rgba(0,210,255,0.06));
+  border: 1px solid rgba(0,210,255,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 32px;
+  flex-shrink: 0;
+  position: relative;
+  animation: master-pulse 4s ease-in-out infinite;
+  box-shadow: 0 0 30px rgba(0,210,255,0.15), inset 0 0 20px rgba(0,210,255,0.04);
+}
+.master-avatar::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  border-top-color: rgba(0,210,255,0.5);
+  border-right-color: rgba(0,210,255,0.2);
+  animation: spin-slow 6s linear infinite;
+}
+.master-avatar::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  border-bottom-color: rgba(0,100,255,0.3);
+  animation: spin-slow 10s linear infinite reverse;
+}
+@keyframes master-pulse {
+  0%,100% { box-shadow: 0 0 24px rgba(0,210,255,0.12), inset 0 0 16px rgba(0,210,255,0.04); }
+  50% { box-shadow: 0 0 40px rgba(0,210,255,0.28), inset 0 0 24px rgba(0,210,255,0.08); }
+}
+
+.master-info { flex: 1; position: relative; z-index: 1; }
+
+.master-sys-id {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px; color: var(--text-dim);
+  letter-spacing: 3px; margin-bottom: 4px;
+}
+
+.master-name {
+  font-family: 'Orbitron', monospace;
+  font-size: 18px; font-weight: 700;
+  color: var(--cyan);
+  text-shadow: 0 0 20px var(--cyan-glow);
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+}
+
+.master-desc {
+  font-family: 'Exo 2', sans-serif;
+  font-size: 13px; font-weight: 300;
+  color: var(--text-primary);
+  line-height: 1.6;
+  max-width: 560px;
+}
+
+.master-pipeline {
+  display: flex; align-items: center; gap: 6px;
+  margin-top: 14px; flex-wrap: wrap;
+}
+
+.pipeline-node {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px; letter-spacing: 1px;
+  padding: 4px 10px;
+  border: 1px solid var(--border-mid);
+  border-radius: 2px;
+  color: var(--text-primary);
+  background: rgba(0,0,0,0.3);
+  position: relative;
+}
+
+.pipeline-node.active {
+  border-color: rgba(0,210,255,0.3);
+  color: var(--cyan);
+  background: rgba(0,210,255,0.04);
+  box-shadow: 0 0 8px rgba(0,210,255,0.1);
+}
+
+.pipeline-arrow {
+  color: var(--text-dim);
+  font-size: 10px;
+}
+
+.master-right {
+  display: flex; flex-direction: column; gap: 12px;
+  align-items: flex-end;
+  position: relative; z-index: 1;
+  flex-shrink: 0;
+}
+
+.uptime-display {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px; color: var(--cyan);
+  background: rgba(0,210,255,0.05);
+  border: 1px solid rgba(0,210,255,0.18);
+  padding: 5px 12px; border-radius: 2px;
+  letter-spacing: 1.5px;
+}
+
+.route-flow {
+  display: flex; align-items: center; gap: 3px;
+}
+.rf-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--blue);
+  box-shadow: 0 0 6px var(--blue);
+  animation: rf-flow 1.4s ease-in-out infinite;
+}
+.rf-dot:nth-child(2) { animation-delay: 0.18s; }
+.rf-dot:nth-child(3) { animation-delay: 0.36s; }
+.rf-dot:nth-child(4) { animation-delay: 0.54s; }
+.rf-dot:nth-child(5) { animation-delay: 0.72s; }
+@keyframes rf-flow {
+  0%,100% { opacity: 0.15; transform: scale(0.7); }
+  50% { opacity: 1; transform: scale(1); }
+}
+
+.load-meter {
+  display: flex; flex-direction: column; gap: 5px;
+  width: 140px;
+}
+.load-row {
+  display: flex; align-items: center; gap: 8px;
+}
+.load-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 8px; color: var(--text-dim);
+  letter-spacing: 1px; width: 32px; flex-shrink: 0;
+}
+.load-bar {
+  flex: 1; height: 3px;
+  background: var(--border);
+  border-radius: 2px; overflow: hidden;
+}
+.load-fill {
+  height: 100%; border-radius: 2px;
+  animation: load-anim 3s ease-in-out infinite;
+}
+.load-fill.cpu { background: var(--cyan); box-shadow: 0 0 4px var(--cyan); width: 42%; animation-delay: 0s; }
+.load-fill.mem { background: var(--blue); box-shadow: 0 0 4px var(--blue); width: 67%; animation-delay: 0.5s; }
+.load-fill.net { background: var(--standby); box-shadow: 0 0 4px var(--standby); width: 28%; animation-delay: 1s; }
+@keyframes load-anim {
+  0%,100% { opacity: 0.9; }
+  50% { opacity: 0.6; }
+}
+.load-val {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 8px; color: var(--text-dim);
+  width: 24px; text-align: right; flex-shrink: 0;
+}
+
+/* ══════════════════════════════════════
+   AGENT GRID
+══════════════════════════════════════ */
+.agent-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+  gap: 12px;
+}
+
+.agent-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 18px 20px;
+  position: relative; overflow: hidden;
+  cursor: default;
+  transition: all 0.3s ease;
+}
+
+.agent-card:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--border-mid);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.5), 0 0 20px rgba(0,210,255,0.04);
+}
+
+/* Top status bar */
+.agent-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 2px;
+  background: var(--status-color, var(--border));
+  box-shadow: 0 0 8px var(--status-color, transparent);
+  transition: all 0.4s;
+}
+
+/* Corner accent */
+.agent-card::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 0; height: 0;
+  border-style: solid;
+  border-width: 0 24px 24px 0;
+  border-color: transparent var(--status-color, var(--border)) transparent transparent;
+  opacity: 0.2;
+}
+
+.agent-card.standby { --status-color: var(--standby); }
+.agent-card.working { --status-color: var(--working); }
+.agent-card.error   { --status-color: var(--error); }
+.agent-card.offline { --status-color: var(--offline); }
+
+/* Corner brackets */
+.card-corner-tl, .card-corner-br {
+  position: absolute;
+  width: 10px; height: 10px;
+  border-color: var(--status-color, var(--border));
+  border-style: solid;
+  opacity: 0.5;
+  transition: opacity 0.3s;
+}
+.card-corner-tl { top: 4px; left: 4px; border-width: 1px 0 0 1px; }
+.card-corner-br { bottom: 4px; right: 4px; border-width: 0 1px 1px 0; }
+.agent-card:hover .card-corner-tl,
+.agent-card:hover .card-corner-br { opacity: 1; }
+
+/* Working shimmer */
+.agent-card.working .working-shimmer {
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg,
+    transparent 40%, rgba(255,179,0,0.02) 50%, transparent 60%);
+  background-size: 200% 200%;
+  animation: shimmer-move 2s linear infinite;
+}
+@keyframes shimmer-move {
+  0% { background-position: -200% -200%; }
+  100% { background-position: 200% 200%; }
+}
+
+/* Error pulse */
+.agent-card.error {
+  animation: error-card-pulse 2s ease-in-out infinite;
+}
+@keyframes error-card-pulse {
+  0%,100% { border-color: var(--border); }
+  50% { border-color: rgba(255,45,85,0.3); }
+}
+
+/* ── CARD TOP ── */
+.card-top {
+  display: flex; align-items: flex-start;
+  gap: 14px; margin-bottom: 12px;
+}
+
+.agent-avatar {
+  width: 52px; height: 52px;
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px;
+  border: 1px solid var(--status-color, var(--border));
+  background: linear-gradient(135deg, rgba(0,0,0,0.5), rgba(0,0,0,0.2));
+  flex-shrink: 0;
+  position: relative;
+  transition: all 0.3s;
+}
+
+.agent-card.working .agent-avatar {
+  box-shadow: 0 0 20px rgba(255,179,0,0.2);
+  animation: avatar-pulse-working 2s ease-in-out infinite;
+}
+.agent-card.error .agent-avatar {
+  box-shadow: 0 0 16px rgba(255,45,85,0.2);
+  animation: avatar-pulse-error 1.2s ease-in-out infinite;
+}
+.agent-card.standby .agent-avatar {
+  box-shadow: 0 0 12px rgba(0,230,118,0.08);
+}
+@keyframes avatar-pulse-working {
+  0%,100% { box-shadow: 0 0 12px rgba(255,179,0,0.12); }
+  50% { box-shadow: 0 0 28px rgba(255,179,0,0.3); }
+}
+@keyframes avatar-pulse-error {
+  0%,100% { box-shadow: 0 0 10px rgba(255,45,85,0.15); }
+  50% { box-shadow: 0 0 24px rgba(255,45,85,0.35); }
+}
+
+/* Scan ring on working avatar */
+.agent-card.working .agent-avatar::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,179,0,0.4);
+  animation: ring-expand 2s ease-in-out infinite;
+}
+
+.card-info { flex: 1; min-width: 0; }
+
+.agent-sys-id {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 8px; color: var(--text-dim);
+  letter-spacing: 2.5px; margin-bottom: 3px;
+}
+
+.agent-name {
+  font-family: 'Exo 2', sans-serif;
+  font-size: 15px; font-weight: 700;
+  color: var(--text-bright);
+  margin-bottom: 7px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+.status-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 9px; border-radius: 2px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 8px; letter-spacing: 2px;
+  transition: all 0.3s;
+}
+.status-badge .dot {
+  width: 5px; height: 5px; border-radius: 50%;
+}
+
+.status-badge.standby {
+  background: var(--standby-dim);
+  color: var(--standby);
+  border: 1px solid rgba(0,230,118,0.2);
+}
+.status-badge.standby .dot {
+  background: var(--standby);
+  box-shadow: 0 0 6px var(--standby);
+  animation: blink 2.5s ease-in-out infinite;
+}
+
+.status-badge.working {
+  background: var(--working-dim);
+  color: var(--working);
+  border: 1px solid rgba(255,179,0,0.25);
+}
+.status-badge.working .dot {
+  background: var(--working);
+  box-shadow: 0 0 8px var(--working);
+  animation: blink 0.7s ease-in-out infinite;
+}
+
+.status-badge.error {
+  background: var(--error-dim);
+  color: var(--error);
+  border: 1px solid rgba(255,45,85,0.25);
+}
+.status-badge.error .dot {
+  background: var(--error);
+  box-shadow: 0 0 8px var(--error);
+  animation: blink 0.4s ease-in-out infinite;
+}
+
+@keyframes blink { 50% { opacity: 0.25; } }
+
+/* ── TASK ROW ── */
+.task-row {
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--border);
+  border-left: 2px solid var(--status-color, var(--border));
+  border-radius: 0 3px 3px 0;
+  padding: 7px 12px;
+  margin-bottom: 12px;
+  display: flex; align-items: center; gap: 8px;
+  min-height: 34px;
+}
+.task-prefix {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 8px; color: var(--text-dim);
+  letter-spacing: 1.5px; flex-shrink: 0;
+}
+.task-text {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px; color: var(--text-primary);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.agent-card.working .task-text { color: var(--working); }
+.agent-card.error .task-text { color: var(--error); }
+
+/* ── PROGRESS ── */
+.progress-section { margin-bottom: 12px; }
+
+.progress-header {
+  display: flex; justify-content: space-between;
+  align-items: center; margin-bottom: 6px;
+}
+.progress-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 8px; color: var(--text-dim);
+  letter-spacing: 1.5px;
+}
+.progress-pct {
+  font-family: 'Orbitron', monospace;
+  font-size: 12px; color: var(--text-primary);
+  transition: color 0.3s;
+}
+.agent-card.working .progress-pct { color: var(--working); }
+.agent-card.error .progress-pct { color: var(--error); }
+.agent-card.standby .progress-pct { color: var(--standby); }
+
+.progress-track {
+  height: 4px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 2px; overflow: hidden;
+  position: relative;
+}
+.progress-fill {
+  height: 100%; border-radius: 2px;
+  position: relative; transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.agent-card.standby .progress-fill {
+  background: linear-gradient(90deg, var(--standby), rgba(0,230,118,0.6));
+  box-shadow: 0 0 6px rgba(0,230,118,0.4);
+}
+.agent-card.working .progress-fill {
+  background: linear-gradient(90deg, var(--working), #ff8c00);
+  box-shadow: 0 0 8px rgba(255,179,0,0.5);
+  animation: progress-glow 1.2s ease-in-out infinite alternate;
+}
+.agent-card.error .progress-fill {
+  background: linear-gradient(90deg, var(--error), #ff6080);
+  box-shadow: 0 0 8px rgba(255,45,85,0.4);
+}
+@keyframes progress-glow {
+  from { box-shadow: 0 0 5px rgba(255,179,0,0.3); }
+  to   { box-shadow: 0 0 14px rgba(255,179,0,0.7); }
+}
+
+/* Animated stripes on working bar */
+.agent-card.working .progress-fill::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0px, transparent 8px,
+    rgba(255,255,255,0.08) 8px, rgba(255,255,255,0.08) 10px
+  );
+  animation: stripes-move 0.8s linear infinite;
+}
+@keyframes stripes-move { to { background-position: 20px 0; } }
+
+/* ── CARD FOOTER ── */
+.card-footer {
+  display: flex; justify-content: space-between; align-items: center;
+}
+.last-update {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 8px; color: var(--text-dim);
+  letter-spacing: 1px;
+}
+.trigger-pill {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 8px;
+  padding: 2px 8px; border-radius: 2px;
+  background: rgba(0,210,255,0.05);
+  border: 1px solid rgba(0,210,255,0.12);
+  color: var(--cyan);
+  letter-spacing: 0.5px;
+}
+
+/* ══════════════════════════════════════
+   BOTTOM GRID: LOG + MINI CHART
+══════════════════════════════════════ */
+.bottom-grid {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 16px;
+}
+
+/* ── LOG PANEL ── */
+.log-panel {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  overflow: hidden;
+  position: relative;
+}
+
+.log-panel::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+  opacity: 0.3;
+}
+
+.log-header {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(0,0,0,0.3);
+}
+.log-title {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px; color: var(--cyan);
+  letter-spacing: 3px;
+}
+.log-meta {
+  display: flex; align-items: center; gap: 12px;
+}
+.log-ping {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 8px; color: var(--text-dim);
+  letter-spacing: 1px;
+}
+.log-count {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 8px; color: var(--text-dim);
+  letter-spacing: 1px;
+}
+
+.log-body {
+  padding: 8px 0;
+  max-height: 180px; overflow-y: auto;
+  display: flex; flex-direction: column;
+}
+.log-body::-webkit-scrollbar { width: 2px; }
+.log-body::-webkit-scrollbar-track { background: transparent; }
+.log-body::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 2px; }
+
+.log-entry {
+  display: flex; gap: 10px; align-items: flex-start;
+  padding: 5px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.015);
+  transition: background 0.2s;
+}
+.log-entry:hover { background: rgba(0,210,255,0.02); }
+
+.log-time {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px; color: var(--text-dim);
+  flex-shrink: 0; width: 44px; line-height: 1.6;
+}
+.log-agent {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px; width: 72px; flex-shrink: 0; line-height: 1.6;
+  font-weight: 600;
+}
+.log-msg {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px; color: var(--text-primary);
+  flex: 1; line-height: 1.6;
+}
+
+.log-agent.standby { color: var(--standby); }
+.log-agent.working { color: var(--working); }
+.log-agent.error   { color: var(--error); }
+.log-agent.system  { color: var(--cyan); }
+
+/* Newest log entry highlight */
+.log-entry:first-child { background: rgba(0,210,255,0.025); }
+.log-entry:first-child .log-time { color: var(--cyan); }
+
+/* ── SIDE PANEL ── */
+.side-panel {
+  display: flex; flex-direction: column; gap: 12px;
+}
+
+.mini-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 16px;
+  position: relative;
+  flex: 1;
+}
+.mini-card-title {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 8px; color: var(--text-dim);
+  letter-spacing: 3px; margin-bottom: 12px;
+}
+
+/* Hexagonal activity map */
+.hex-map {
+  display: flex; flex-wrap: wrap; gap: 4px;
+}
+.hex-cell {
+  width: 18px; height: 18px;
+  border-radius: 3px;
+  background: var(--cell-bg, rgba(255,255,255,0.03));
+  border: 1px solid rgba(255,255,255,0.04);
+  transition: all 0.5s;
+  cursor: pointer;
+}
+.hex-cell:hover { transform: scale(1.2); z-index: 1; }
+.hex-cell.lvl-1 { --cell-bg: rgba(0,210,255,0.08); border-color: rgba(0,210,255,0.1); }
+.hex-cell.lvl-2 { --cell-bg: rgba(0,210,255,0.18); border-color: rgba(0,210,255,0.2); }
+.hex-cell.lvl-3 { --cell-bg: rgba(0,210,255,0.35); border-color: rgba(0,210,255,0.4); box-shadow: 0 0 6px rgba(0,210,255,0.2); }
+.hex-cell.lvl-4 { --cell-bg: rgba(0,210,255,0.6); border-color: rgba(0,210,255,0.7); box-shadow: 0 0 8px rgba(0,210,255,0.4); }
+
+/* Task queue */
+.queue-list {
+  display: flex; flex-direction: column; gap: 6px;
+}
+.queue-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px;
+  background: rgba(0,0,0,0.2);
+}
+.q-num {
+  color: var(--text-dim); flex-shrink: 0; width: 14px;
+}
+.q-text { color: var(--text-primary); flex: 1; }
+.q-status { flex-shrink: 0; }
+.q-dot { width: 5px; height: 5px; border-radius: 50%; }
+.q-dot.done { background: var(--standby); box-shadow: 0 0 4px var(--standby); }
+.q-dot.run  { background: var(--working); box-shadow: 0 0 4px var(--working); animation: blink 0.7s infinite; }
+.q-dot.wait { background: var(--text-dim); }
+
+/* ══════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════ */
+@media (max-width: 900px) {
+  .bottom-grid { grid-template-columns: 1fr; }
+  .side-panel { flex-direction: row; }
+  .mini-card { flex: 1; }
+}
+@media (max-width: 680px) {
+  header { padding: 0 16px; }
+  .header-center { display: none; }
+  .main { padding: 16px; }
+  .stats-bar { padding: 0 16px; }
+  .agent-grid { grid-template-columns: 1fr; }
+  .master-panel { flex-direction: column; }
+  .master-right { align-items: flex-start; flex-direction: row; flex-wrap: wrap; }
+  .side-panel { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+<div class="ambient ambient-1"></div>
+<div class="ambient ambient-2"></div>
+<div class="ambient ambient-3"></div>
+
+<div class="wrapper">
+
+<!-- ════════════ HEADER ════════════ -->
+<header>
+  <div class="logo-block">
+    <div class="logo-icon">🤖</div>
+    <div class="logo-text-block">
+      <div class="logo-text">CTRL ROOM</div>
+      <div class="logo-sub">PERSONAL AUTOMATION SYSTEM v2.0</div>
+    </div>
+  </div>
+
+  <div class="header-center">
+    <div class="header-tag">NODE: ALPHA-7</div>
+    <div class="signal-bars">
+      <div class="signal-bar"></div>
+      <div class="signal-bar"></div>
+      <div class="signal-bar"></div>
+      <div class="signal-bar"></div>
+    </div>
+    <div class="header-tag">ENV: PRODUCTION</div>
+  </div>
+
+  <div class="header-right">
+    <div class="clock-block">
+      <div class="clock" id="clock">--:--:--</div>
+      <div class="date-display" id="dateDisplay">--- -- --- ----</div>
+    </div>
+    <div class="system-badge">
+      <div class="status-pulse"></div>
+      <div class="status-text">ONLINE</div>
+    </div>
+    <div class="refresh-ring" id="refreshRing"></div>
+  </div>
+</header>
+
+<!-- ════════════ STATS BAR ════════════ -->
+<div class="stats-bar">
+  <div class="stat-item">
+    <div class="stat-icon">◈</div>
+    <div>
+      <div class="stat-value cyan" id="statTotal">7</div>
+      <div class="stat-label">TOTAL AGENTS</div>
+    </div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-icon" style="color:var(--standby)">▣</div>
+    <div>
+      <div class="stat-value green" id="statStandby">6</div>
+      <div class="stat-label">STANDBY</div>
+      <div class="stat-sub">READY TO DEPLOY</div>
+    </div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-icon" style="color:var(--working)">▶</div>
+    <div>
+      <div class="stat-value yellow" id="statWorking">1</div>
+      <div class="stat-label">WORKING</div>
+      <div class="stat-sub">IN EXECUTION</div>
+    </div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-icon" style="color:var(--error)">⚠</div>
+    <div>
+      <div class="stat-value red" id="statError">0</div>
+      <div class="stat-label">ERROR</div>
+      <div class="stat-sub">NEEDS ATTENTION</div>
+    </div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-icon" style="color:var(--text-dim)">⟳</div>
+    <div>
+      <div class="stat-value" id="statInterval" style="color:var(--text-primary);font-size:20px;margin-top:4px">4.0s</div>
+      <div class="stat-label">REFRESH RATE</div>
+      <div class="stat-sub">DEMO MODE</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ MAIN ════════════ -->
+<div class="main">
+
+  <!-- MASTER AGENT -->
+  <div>
+    <div class="section-header">
+      <div class="section-pip"></div>
+      <div class="section-title">MASTER AGENT</div>
+      <div class="section-line"></div>
+      <div class="section-count">ROOT PROCESS</div>
+    </div>
+
+    <div class="master-panel">
+      <div class="master-panel-corner-tl"></div>
+      <div class="master-panel-corner-br"></div>
+      <div class="master-bg-dots"></div>
+
+      <div class="master-avatar">🧠</div>
+
+      <div class="master-info">
+        <div class="master-sys-id">SYS // ID: MASTER_ROUTER_001 // CLASS: ORCHESTRATOR</div>
+        <div class="master-name">MASTER BOT / ROUTER</div>
+        <div class="master-desc">
+          Menerima perintah dari Telegram / Web UI — deteksi intent — routing ke sub-agent yang sesuai — update status realtime — kirim hasil ke user.
+        </div>
+        <div class="master-pipeline">
+          <div class="pipeline-node active">INPUT</div>
+          <div class="pipeline-arrow">→</div>
+          <div class="pipeline-node active">INTENT DETECT</div>
+          <div class="pipeline-arrow">→</div>
+          <div class="pipeline-node active">ROUTER</div>
+          <div class="pipeline-arrow">→</div>
+          <div class="pipeline-node">SUB-AGENT</div>
+          <div class="pipeline-arrow">→</div>
+          <div class="pipeline-node">RESPOND</div>
+        </div>
+      </div>
+
+      <div class="master-right">
+        <div class="uptime-display" id="uptimeChip">UPTIME: 00:00:00</div>
+
+        <div class="route-flow">
+          <div class="rf-dot"></div>
+          <div class="rf-dot"></div>
+          <div class="rf-dot"></div>
+          <div class="rf-dot"></div>
+          <div class="rf-dot"></div>
+        </div>
+
+        <div class="load-meter">
+          <div class="load-row">
+            <div class="load-label">CPU</div>
+            <div class="load-bar"><div class="load-fill cpu" id="cpuBar"></div></div>
+            <div class="load-val" id="cpuVal">42%</div>
+          </div>
+          <div class="load-row">
+            <div class="load-label">MEM</div>
+            <div class="load-bar"><div class="load-fill mem" id="memBar"></div></div>
+            <div class="load-val" id="memVal">67%</div>
+          </div>
+          <div class="load-row">
+            <div class="load-label">NET</div>
+            <div class="load-bar"><div class="load-fill net" id="netBar"></div></div>
+            <div class="load-val" id="netVal">28%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUB-AGENTS -->
+  <div>
+    <div class="section-header">
+      <div class="section-pip"></div>
+      <div class="section-title">SUB-AGENTS</div>
+      <div class="section-line"></div>
+      <div class="section-count" id="agentCountLabel">7 REGISTERED</div>
+    </div>
+    <div class="agent-grid" id="agentGrid"></div>
+  </div>
+
+  <!-- BOTTOM: LOG + SIDEBAR -->
+  <div class="bottom-grid">
+
+    <!-- LOG -->
+    <div>
+      <div class="section-header">
+        <div class="section-pip"></div>
+        <div class="section-title">ACTIVITY LOG</div>
+        <div class="section-line"></div>
+        <div class="section-count" id="logPing">PING: ---ms</div>
+      </div>
+      <div class="log-panel">
+        <div class="log-header">
+          <div class="log-title">// SYSTEM LOG — LIVE STREAM</div>
+          <div class="log-meta">
+            <div class="log-count" id="logCount">10 ENTRIES</div>
+          </div>
+        </div>
+        <div class="log-body" id="logBody"></div>
+      </div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div>
+      <div class="section-header">
+        <div class="section-pip"></div>
+        <div class="section-title">METRICS</div>
+        <div class="section-line"></div>
+      </div>
+      <div class="side-panel">
+        <!-- Activity Map -->
+        <div class="mini-card">
+          <div class="mini-card-title">ACTIVITY HEATMAP // 7D</div>
+          <div class="hex-map" id="hexMap"></div>
+        </div>
+        <!-- Task Queue -->
+        <div class="mini-card">
+          <div class="mini-card-title">TASK QUEUE</div>
+          <div class="queue-list">
+            <div class="queue-item">
+              <div class="q-num">01</div>
+              <div class="q-text">Laporan Harian</div>
+              <div class="q-status"><div class="q-dot done"></div></div>
+            </div>
+            <div class="queue-item">
+              <div class="q-num">02</div>
+              <div class="q-text">Match Laporan</div>
+              <div class="q-status"><div class="q-dot run"></div></div>
+            </div>
+            <div class="queue-item">
+              <div class="q-num">03</div>
+              <div class="q-text">Scan Material</div>
+              <div class="q-status"><div class="q-dot wait"></div></div>
+            </div>
+            <div class="queue-item">
+              <div class="q-num">04</div>
+              <div class="q-text">GitHub Backup</div>
+              <div class="q-status"><div class="q-dot wait"></div></div>
+            </div>
+            <div class="queue-item">
+              <div class="q-num">05</div>
+              <div class="q-text">Reminder Check</div>
+              <div class="q-status"><div class="q-dot wait"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /bottom-grid -->
+</div><!-- /main -->
+</div><!-- /wrapper -->
+
+<script>
+// ══════════════════════════════════════
+// DATA
+// ══════════════════════════════════════
+const DEMO_CYCLES = [
+  [
+    { id:"saldo",    name:"Agent Saldo",          avatar:"🧾", status:"standby", task:"-",                         progress:0,  last:"13:10", trigger:"!saldo <bulan>" },
+    { id:"laporan",  name:"Agent Laporan Harian", avatar:"🧑‍💼", status:"working", task:"Update Daftar-2 Excel",     progress:65, last:"13:24", trigger:"laporan harian baru!" },
+    { id:"match",    name:"Agent Match Laporan",  avatar:"🔍", status:"standby", task:"-",                         progress:0,  last:"12:55", trigger:"!match laporan" },
+    { id:"scan_mat", name:"Agent Scan Material",  avatar:"📦", status:"standby", task:"-",                         progress:0,  last:"11:30", trigger:"!scan material" },
+    { id:"browser",  name:"Agent Browser/Web",    avatar:"🌐", status:"standby", task:"-",                         progress:0,  last:"13:01", trigger:"!yt <keyword>" },
+    { id:"github",   name:"Agent GitHub Backup",  avatar:"💾", status:"standby", task:"-",                         progress:0,  last:"12:00", trigger:"backup workflow" },
+    { id:"reminder", name:"Agent Reminder",       avatar:"⏰", status:"standby", task:"-",                         progress:0,  last:"13:20", trigger:"reminder/schedule" },
+  ],
+  [
+    { id:"saldo",    name:"Agent Saldo",          avatar:"🧾", status:"standby", task:"-",                         progress:0,  last:"13:10", trigger:"!saldo <bulan>" },
+    { id:"laporan",  name:"Agent Laporan Harian", avatar:"🧑‍💼", status:"standby", task:"Selesai 13:26",            progress:100,last:"13:26", trigger:"laporan harian baru!" },
+    { id:"match",    name:"Agent Match Laporan",  avatar:"🔍", status:"working", task:"Cek mismatch NRT/KTK",      progress:40, last:"13:26", trigger:"!match laporan" },
+    { id:"scan_mat", name:"Agent Scan Material",  avatar:"📦", status:"standby", task:"-",                         progress:0,  last:"11:30", trigger:"!scan material" },
+    { id:"browser",  name:"Agent Browser/Web",    avatar:"🌐", status:"standby", task:"-",                         progress:0,  last:"13:01", trigger:"!yt <keyword>" },
+    { id:"github",   name:"Agent GitHub Backup",  avatar:"💾", status:"standby", task:"-",                         progress:0,  last:"12:00", trigger:"backup workflow" },
+    { id:"reminder", name:"Agent Reminder",       avatar:"⏰", status:"standby", task:"-",                         progress:0,  last:"13:20", trigger:"reminder/schedule" },
+  ],
+  [
+    { id:"saldo",    name:"Agent Saldo",          avatar:"🧾", status:"working", task:"Baca saldo Mei",            progress:80, last:"13:27", trigger:"!saldo <bulan>" },
+    { id:"laporan",  name:"Agent Laporan Harian", avatar:"🧑‍💼", status:"standby", task:"Selesai 13:26",            progress:100,last:"13:26", trigger:"laporan harian baru!" },
+    { id:"match",    name:"Agent Match Laporan",  avatar:"🔍", status:"standby", task:"OK — 0 mismatch",          progress:100,last:"13:27", trigger:"!match laporan" },
+    { id:"scan_mat", name:"Agent Scan Material",  avatar:"📦", status:"working", task:"Scan folder RFQ…",         progress:30, last:"13:27", trigger:"!scan material" },
+    { id:"browser",  name:"Agent Browser/Web",    avatar:"🌐", status:"standby", task:"-",                         progress:0,  last:"13:01", trigger:"!yt <keyword>" },
+    { id:"github",   name:"Agent GitHub Backup",  avatar:"💾", status:"standby", task:"-",                         progress:0,  last:"12:00", trigger:"backup workflow" },
+    { id:"reminder", name:"Agent Reminder",       avatar:"⏰", status:"working", task:"Check jadwal sore",        progress:55, last:"13:28", trigger:"reminder/schedule" },
+  ],
+  [
+    { id:"saldo",    name:"Agent Saldo",          avatar:"🧾", status:"standby", task:"Saldo Mei: Rp12.345.678",  progress:100,last:"13:28", trigger:"!saldo <bulan>" },
+    { id:"laporan",  name:"Agent Laporan Harian", avatar:"🧑‍💼", status:"standby", task:"Selesai 13:26",            progress:100,last:"13:26", trigger:"laporan harian baru!" },
+    { id:"match",    name:"Agent Match Laporan",  avatar:"🔍", status:"standby", task:"OK — 0 mismatch",          progress:100,last:"13:27", trigger:"!match laporan" },
+    { id:"scan_mat", name:"Agent Scan Material",  avatar:"📦", status:"error",   task:"File terkunci / COM error",progress:60, last:"13:29", trigger:"!scan material" },
+    { id:"browser",  name:"Agent Browser/Web",    avatar:"🌐", status:"working", task:"YouTube search: 'n8n'",    progress:70, last:"13:29", trigger:"!yt <keyword>" },
+    { id:"github",   name:"Agent GitHub Backup",  avatar:"💾", status:"working", task:"git commit & push…",       progress:45, last:"13:29", trigger:"backup workflow" },
+    { id:"reminder", name:"Agent Reminder",       avatar:"⏰", status:"standby", task:"Selesai 13:28",            progress:100,last:"13:28", trigger:"reminder/schedule" },
+  ],
+];
+
+const LOG_ENTRIES = [
+  { time:"13:29", agent:"SCAN_MAT",  cls:"error",   msg:"COM error saat buka .xlsm — file terkunci oleh Excel" },
+  { time:"13:29", agent:"GITHUB",    cls:"working",  msg:"git add -A && git commit -m 'auto: backup workflow 13:29'" },
+  { time:"13:29", agent:"BROWSER",   cls:"working",  msg:"Navigating YouTube search: n8n automation" },
+  { time:"13:28", agent:"SALDO",     cls:"standby",  msg:"Output: Saldo Mei → Rp 12.345.678" },
+  { time:"13:27", agent:"MATCH",     cls:"standby",  msg:"Hasil: 0 mismatch — laporan & absen cocok ✓" },
+  { time:"13:26", agent:"LAPORAN",   cls:"standby",  msg:"Selesai update Word + Daftar-1 + Daftar-2 via xlwings" },
+  { time:"13:26", agent:"MASTER",    cls:"system",   msg:"Routing: intent=match_laporan → MATCH agent" },
+  { time:"13:25", agent:"MASTER",    cls:"system",   msg:"Routing: intent=saldo → SALDO agent" },
+  { time:"13:24", agent:"LAPORAN",   cls:"working",  msg:"xlwings: open Project Budgeting.xlsm → update row 42" },
+  { time:"13:22", agent:"MASTER",    cls:"system",   msg:"System online — 7 sub-agents registered // env=PRODUCTION" },
+];
+
+// ══════════════════════════════════════
+// STATE
+// ══════════════════════════════════════
+let cycleIdx = 0;
+const startTime = Date.now();
+
+// ══════════════════════════════════════
+// CLOCK
+// ══════════════════════════════════════
+function updateClock() {
+  const now = new Date();
+  const pad = n => String(n).padStart(2,'0');
+  document.getElementById('clock').textContent =
+    `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+
+  const DAYS = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+  const MONTHS = ['JAN','FEB','MAR','APR','MEI','JUN','JUL','AGU','SEP','OKT','NOV','DES'];
+  document.getElementById('dateDisplay').textContent =
+    `${DAYS[now.getDay()]} ${pad(now.getDate())} ${MONTHS[now.getMonth()]} ${now.getFullYear()}`;
+
+  const elapsed = Math.floor((Date.now() - startTime) / 1000);
+  const h = String(Math.floor(elapsed/3600)).padStart(2,'0');
+  const m = String(Math.floor((elapsed%3600)/60)).padStart(2,'0');
+  const s = String(elapsed%60).padStart(2,'0');
+  document.getElementById('uptimeChip').textContent = `UPTIME: ${h}:${m}:${s}`;
+}
+
+// ══════════════════════════════════════
+// RENDER AGENTS
+// ══════════════════════════════════════
+function renderAgents(agents) {
+  const grid = document.getElementById('agentGrid');
+  grid.innerHTML = agents.map(a => {
+    const pctStr = (a.status === 'standby' && a.progress === 0) ? '—' : a.progress + '%';
+    const taskDisplay = a.task === '-' ? '— idle —' : a.task;
+    return `
+    <div class="agent-card ${a.status}">
+      <div class="card-corner-tl"></div>
+      <div class="card-corner-br"></div>
+      ${a.status === 'working' ? '<div class="working-shimmer"></div>' : ''}
+
+      <div class="card-top">
+        <div class="agent-avatar">${a.avatar}</div>
+        <div class="card-info">
+          <div class="agent-sys-id">ID: ${a.id.toUpperCase()}_AGENT</div>
+          <div class="agent-name">${a.name}</div>
+          <div class="status-badge ${a.status}">
+            <span class="dot"></span>${a.status.toUpperCase()}
+          </div>
+        </div>
+      </div>
+
+      <div class="task-row">
+        <span class="task-prefix">TASK ▸</span>
+        <span class="task-text">${taskDisplay}</span>
+      </div>
+
+      <div class="progress-section">
+        <div class="progress-header">
+          <span class="progress-label">PROGRESS</span>
+          <span class="progress-pct">${pctStr}</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" style="width:${a.progress}%"></div>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <span class="last-update">▸ LAST: ${a.last}</span>
+        <span class="trigger-pill">${a.trigger}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════
+// RENDER STATS
+// ══════════════════════════════════════
+function renderStats(agents) {
+  const s = agents.filter(a=>a.status==='standby').length;
+  const w = agents.filter(a=>a.status==='working').length;
+  const e = agents.filter(a=>a.status==='error').length;
+  document.getElementById('statTotal').textContent   = agents.length;
+  document.getElementById('statStandby').textContent = s;
+  document.getElementById('statWorking').textContent = w;
+  document.getElementById('statError').textContent   = e;
+}
+
+// ══════════════════════════════════════
+// RENDER LOG
+// ══════════════════════════════════════
+function renderLog() {
+  document.getElementById('logCount').textContent = LOG_ENTRIES.length + ' ENTRIES';
+  document.getElementById('logBody').innerHTML = LOG_ENTRIES.map(e => `
+    <div class="log-entry">
+      <span class="log-time">${e.time}</span>
+      <span class="log-agent ${e.cls}">[${e.agent}]</span>
+      <span class="log-msg">${e.msg}</span>
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════
+// HEX ACTIVITY MAP
+// ══════════════════════════════════════
+function buildHexMap() {
+  const levels = [0,1,0,2,3,1,0,2,3,4,2,1,3,4,2,1,0,3,2,4,3,1,2,0,1,3,2,4,3,1,2,3,4,2,1,0,2,3,1,2,3,0,1,2,3,4,1,2,3,0,1,3,2,1,4,3];
+  document.getElementById('hexMap').innerHTML = levels.map(l =>
+    `<div class="hex-cell ${l>0?'lvl-'+l:''}" title="Activity: ${l}"></div>`
+  ).join('');
+}
+
+// ══════════════════════════════════════
+// FAKE LOAD METERS
+// ══════════════════════════════════════
+function updateLoads() {
+  const cpu = 30 + Math.random()*40;
+  const mem = 55 + Math.random()*25;
+  const net = 10 + Math.random()*50;
+  document.getElementById('cpuBar').style.width = cpu + '%';
+  document.getElementById('memBar').style.width = mem + '%';
+  document.getElementById('netBar').style.width = net + '%';
+  document.getElementById('cpuVal').textContent = Math.round(cpu) + '%';
+  document.getElementById('memVal').textContent = Math.round(mem) + '%';
+  document.getElementById('netVal').textContent = Math.round(net) + '%';
+}
+
+// ══════════════════════════════════════
+// FETCH CYCLE
+// ══════════════════════════════════════
+async function fetchStatus() {
+  const ring = document.getElementById('refreshRing');
+  ring.classList.add('active');
+
+  const t0 = performance.now();
+  await new Promise(r => setTimeout(r, 60 + Math.random()*60));
+  const ping = Math.round(performance.now() - t0);
+  document.getElementById('logPing').textContent = `PING: ${ping}ms`;
+
+  const agents = DEMO_CYCLES[cycleIdx % DEMO_CYCLES.length];
+  cycleIdx++;
+
+  renderAgents(agents);
+  renderStats(agents);
+  updateLoads();
+
+  ring.classList.remove('active');
+}
+
+// ══════════════════════════════════════
+// INIT
+// ══════════════════════════════════════
+renderLog();
+buildHexMap();
+fetchStatus();
+updateClock();
+setInterval(updateClock, 1000);
+setInterval(fetchStatus, 4000);
+
+/*
+  PRODUCTION SWAP:
+  Replace fetchStatus() body with:
+  const res = await fetch('/status.json?t=' + Date.now());
+  const data = await res.json();
+  renderAgents(data.agents);
+  renderStats(data.agents);
+  setInterval(fetchStatus, 1500);
+*/
+</script>
+</body>
+</html>
