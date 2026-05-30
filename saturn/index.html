@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Saturn Orbit — Reivan Abdee</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&family=Syne:wght@400;700;800&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --accent: #C8A96E;
+    --accent2: #E8C97A;
+    --star-white: rgba(255,255,255,0.8);
+    --glass-bg: rgba(255,255,255,0.04);
+    --glass-border: rgba(200,169,110,0.15);
+  }
+
+  body {
+    background: #06060e;
+    min-height: 100vh;
+    overflow-x: hidden;
+    font-family: 'Space Grotesk', sans-serif;
+    color: #fff;
+  }
+
+  /* ---- STARS ---- */
+  #stars { position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:0; }
+  .star {
+    position:absolute; border-radius:50%; background:#fff;
+    animation: twinkle var(--dur) ease-in-out infinite alternate;
+  }
+  @keyframes twinkle {
+    0%{opacity:0.1;transform:scale(1);}
+    100%{opacity:0.9;transform:scale(1.3);}
+  }
+
+  /* ---- NEBULA ---- */
+  .nebula { position:fixed; border-radius:50%; filter:blur(100px); pointer-events:none; z-index:0; }
+  .nebula-1 {
+    width:700px; height:700px;
+    background:radial-gradient(circle,rgba(60,20,120,0.3) 0%,transparent 70%);
+    top:-250px; right:-150px; animation: nebula-drift 20s ease-in-out infinite;
+  }
+  .nebula-2 {
+    width:600px; height:600px;
+    background:radial-gradient(circle,rgba(10,40,100,0.25) 0%,transparent 70%);
+    bottom:-200px; left:-100px; animation: nebula-drift 25s ease-in-out infinite reverse;
+  }
+  @keyframes nebula-drift {
+    0%,100%{transform:translate(0,0)scale(1);}
+    50%{transform:translate(40px,30px)scale(1.1);}
+  }
+
+  /* ---- LAYOUT ---- */
+  .app { position:relative; z-index:1; min-height:100vh; display:flex; flex-direction:column; }
+
+  /* ---- NAV ---- */
+  nav {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:24px 48px; position:relative; z-index:10;
+  }
+  .nav-logo { font-family:'Syne',sans-serif; font-weight:800; font-size:1.4rem; letter-spacing:2px; color:var(--accent); text-transform:uppercase; }
+  .nav-links { display:flex; gap:32px; list-style:none; }
+  .nav-links a { color:rgba(255,255,255,0.5); text-decoration:none; font-size:0.85rem; letter-spacing:1px; transition:color 0.3s; text-transform:uppercase; }
+  .nav-links a:hover{color:var(--accent);}
+  .nav-cta { padding:8px 24px; border:1px solid var(--accent); color:var(--accent) !important; border-radius:30px; transition:all 0.3s !important; }
+  .nav-cta:hover{background:var(--accent) !important; color:#06060e !important;}
+
+  /* ---- HERO ---- */
+  .hero {
+    flex:1; display:flex; align-items:center; justify-content:center;
+    position:relative; padding:60px 48px; gap:80px;
+  }
+
+  /* ---- SATURN SCENE ---- */
+  .saturn-scene {
+    position:relative; width:560px; height:560px; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  /* ── REALISTIC SATURN ── */
+  .saturn-wrap {
+    position:relative; width:220px; height:220px;
+    filter: drop-shadow(0 0 40px rgba(200,169,110,0.35)) drop-shadow(0 0 80px rgba(200,169,110,0.15));
+    animation: saturn-glow 8s ease-in-out infinite;
+    z-index:2;
+  }
+  @keyframes saturn-glow {
+    0%,100%{filter:drop-shadow(0 0 40px rgba(200,169,110,0.35)) drop-shadow(0 0 80px rgba(200,169,110,0.15));}
+    50%{filter:drop-shadow(0 0 60px rgba(200,169,110,0.5)) drop-shadow(0 0 120px rgba(200,169,110,0.25));}
+  }
+
+  /* Saturn planet body */
+  .saturn-body {
+    width:100%; height:100%; border-radius:50%;
+    position:relative; overflow:hidden;
+    background:
+      /* South pole shadow */
+      radial-gradient(ellipse 60% 40% at 50% 95%, rgba(20,10,5,0.7) 0%, transparent 100%),
+      /* North pole highlight */
+      radial-gradient(ellipse 50% 30% at 50% 5%, rgba(255,248,200,0.25) 0%, transparent 100%),
+      /* Limb darkening - right edge darker */
+      radial-gradient(circle at 30% 30%, rgba(255,248,200,0.15) 0%, transparent 50%),
+      /* Main surface base */
+      linear-gradient(160deg, #F5E6B0 0%, #E8C97A 18%, #D4A840 28%, #C8923A 38%, #B07830 50%, #A06828 62%, #B88030 72%, #C89840 82%, #DDB055 92%, #E8C97A 100%);
+  }
+
+  /* Atmospheric band layers - simulates Saturn's bands */
+  .saturn-band {
+    position:absolute; left:0; width:100%;
+    border-radius:50%;
+    mix-blend-mode:soft-light;
+  }
+  .band-1 { top:12%; height:11%; background:linear-gradient(180deg, rgba(200,160,80,0.6), rgba(180,130,50,0.4), rgba(200,160,80,0.6)); }
+  .band-2 { top:26%; height:9%; background:linear-gradient(180deg, rgba(160,120,60,0.5), rgba(140,100,40,0.35), rgba(160,120,60,0.5)); }
+  .band-3 { top:38%; height:13%; background:linear-gradient(180deg, rgba(200,170,90,0.7), rgba(180,140,60,0.5), rgba(200,170,90,0.7)); }
+  .band-4 { top:54%; height:10%; background:linear-gradient(180deg, rgba(150,110,50,0.55), rgba(130,90,30,0.35), rgba(150,110,50,0.55)); }
+  .band-5 { top:67%; height:12%; background:linear-gradient(180deg, rgba(190,155,70,0.6), rgba(165,125,45,0.4), rgba(190,155,70,0.6)); }
+  .band-6 { top:82%; height:10%; background:linear-gradient(180deg, rgba(140,100,40,0.5), rgba(120,80,25,0.3), rgba(140,100,40,0.5)); }
+
+  /* Storm / spot */
+  .saturn-storm {
+    position:absolute; border-radius:50%;
+    background:radial-gradient(ellipse, rgba(220,180,100,0.5) 0%, rgba(200,150,70,0.2) 60%, transparent 100%);
+    top:42%; left:58%; width:28%; height:16%;
+    transform:rotate(-5deg);
+    box-shadow: 0 0 8px rgba(220,180,100,0.3);
+  }
+
+  /* Polar cap */
+  .polar-cap {
+    position:absolute; border-radius:50%;
+    background:radial-gradient(ellipse, rgba(180,210,255,0.18) 0%, transparent 70%);
+    top:5%; left:30%; width:40%; height:20%;
+  }
+
+  /* Limb darkening overlay */
+  .saturn-limb {
+    position:absolute; inset:0; border-radius:50%;
+    background: radial-gradient(circle at 70% 60%, transparent 40%, rgba(0,0,0,0.55) 100%);
+    pointer-events:none;
+  }
+  /* Specular highlight */
+  .saturn-spec {
+    position:absolute; border-radius:50%;
+    background:radial-gradient(circle at 25% 22%, rgba(255,255,240,0.35) 0%, rgba(255,248,200,0.1) 30%, transparent 60%);
+    pointer-events:none;
+  }
+
+  /* ── RINGS ── */
+  .ring-layer {
+    position:absolute; top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    border-radius:50%; overflow:visible;
+    z-index:1;
+  }
+
+  /* Ring SVG */
+  .ring-svg {
+    position:absolute; top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    overflow:visible; z-index:1;
+  }
+
+  /* Orbit path dots (dashed rings) */
+  .orbit-ring {
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    border-radius:50%;
+    border:1px dashed rgba(255,255,255,0.06);
+    z-index:0;
+  }
+  .or-1 { width:380px; height:380px; }
+  .or-2 { width:450px; height:450px; border-color:rgba(100,180,255,0.04); }
+  .or-3 { width:530px; height:530px; border-color:rgba(80,220,180,0.03); }
+
+  /* ── SATELLITES ── */
+  .satellite {
+    position:absolute; top:50%; left:50%;
+    z-index:3;
+    animation: orbit var(--dur) linear infinite;
+    transform-origin: center;
+  }
+  .sat-dot {
+    position:absolute; border-radius:50%;
+    background:var(--col);
+    box-shadow: 0 0 var(--glow) var(--col), 0 0 calc(var(--glow)*2) var(--col);
+  }
+  .sat-1 { --col:#A0D8FF; --glow:10px; --r:180px; --dur:14s; }
+  .sat-2 { --col:#7FFFD4; --glow:8px;  --r:240px; --dur:22s; }
+  .sat-3 { --col:#FFB347; --glow:12px; --r:300px; --dur:32s; }
+  @keyframes orbit {
+    0%  { transform:rotateX(72deg) rotateZ(0deg) translateY(calc(var(--r)*-1)); }
+    100%{ transform:rotateX(72deg) rotateZ(360deg) translateY(calc(var(--r)*-1)); }
+  }
+  .sat-dot { width:9px; height:9px; top:calc(var(--r)*-1); left:50%; transform:translateX(-50%); }
+
+  /* ── METEORS ── */
+  .meteor {
+    position:absolute; top:50%; left:50%;
+    z-index:4;
+    animation: meteor-orbit var(--md) linear infinite;
+    transform-origin: center;
+  }
+  .meteor-body {
+    width:4px; height:4px; border-radius:50%;
+    background:var(--mc);
+    box-shadow:
+      0 0 4px var(--mc), 0 0 8px var(--mc),
+      calc(var(--trail)*-1) 0 0 rgba(255,160,50,0.3);
+    animation: mpulse 0.8s ease-in-out infinite;
+  }
+  @keyframes meteor-orbit {
+    0%  { transform:rotateX(var(--mt)) rotateZ(0deg) translateX(var(--mr)); }
+    100%{ transform:rotateX(var(--mt)) rotateZ(360deg) translateX(var(--mr)); }
+  }
+  @keyframes mpulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+  .met-1 { --mc:rgba(255,160,50,0.9); --mr:160px; --md:7s;  --mt:65deg; --trail:18px; }
+  .met-2 { --mc:rgba(200,100,255,0.8); --mr:220px; --md:11s; --mt:50deg; --trail:22px; }
+  .met-3 { --mc:rgba(255,80,120,0.8);  --mr:290px; --md:17s; --mt:80deg; --trail:28px; }
+
+  /* ── HERO TEXT ── */
+  .hero-text { max-width:480px; }
+  .hero-badge {
+    display:inline-flex; align-items:center; gap:8px;
+    padding:6px 16px; border:1px solid var(--glass-border);
+    border-radius:30px; background:var(--glass-bg);
+    font-size:0.75rem; letter-spacing:2px; text-transform:uppercase;
+    color:var(--accent); margin-bottom:24px; backdrop-filter:blur(10px);
+  }
+  .hero-badge::before {
+    content:''; width:6px; height:6px; border-radius:50%;
+    background:#00FF88; box-shadow:0 0 6px #00FF88;
+    animation:pd 2s ease-in-out infinite;
+  }
+  @keyframes pd { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+  .hero h1 {
+    font-family:'Syne',sans-serif; font-weight:800; font-size:4rem;
+    line-height:1.05; margin-bottom:20px; letter-spacing:-1px;
+  }
+  .hero h1 span {
+    background:linear-gradient(135deg,var(--accent),#FFF5CC,var(--accent));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  }
+  .hero-desc {
+    color:rgba(255,255,255,0.5); font-size:1rem; line-height:1.7; margin-bottom:40px;
+  }
+
+  /* ── PLAYER CARD ── */
+  .player-card {
+    background:var(--glass-bg); border:1px solid var(--glass-border);
+    border-radius:20px; padding:24px; backdrop-filter:blur(20px);
+    display:inline-flex; align-items:center; gap:20px;
+    cursor:pointer; transition:all 0.4s cubic-bezier(0.175,0.885,0.32,1.275);
+    position:relative; overflow:hidden;
+  }
+  .player-card::before {
+    content:''; position:absolute; inset:0;
+    background:linear-gradient(135deg,rgba(200,169,110,0.08),transparent);
+    opacity:0; transition:opacity 0.4s;
+  }
+  .player-card:hover::before{opacity:1;}
+  .player-card:hover{
+    border-color:rgba(200,169,110,0.4);
+    transform:translateY(-4px) scale(1.02);
+    box-shadow:0 20px 60px rgba(200,169,110,0.15);
+  }
+  .play-btn {
+    width:56px; height:56px; border-radius:50%;
+    background:linear-gradient(135deg,var(--accent),#E8D090);
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0; transition:all 0.3s; position:relative; z-index:1;
+  }
+  .play-btn svg{width:22px;height:22px;fill:#06060e;margin-left:3px;transition:all 0.3s;}
+  .player-card:hover .play-btn{transform:scale(1.1);box-shadow:0 0 30px rgba(200,169,110,0.5);}
+  .player-info{position:relative;z-index:1;}
+  .player-title{font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;margin-bottom:4px;}
+  .player-sub{font-size:0.78rem;color:rgba(255,255,255,0.4);letter-spacing:1px;}
+  .player-wave{display:flex;align-items:flex-end;gap:2px;height:20px;position:relative;z-index:1;}
+  .wb{width:3px;border-radius:2px;background:var(--accent);opacity:0.25;animation:wa 1s ease-in-out infinite;}
+  .wb:nth-child(1){height:30%;animation-delay:0s;}
+  .wb:nth-child(2){height:60%;animation-delay:0.1s;}
+  .wb:nth-child(3){height:100%;animation-delay:0.2s;}
+  .wb:nth-child(4){height:45%;animation-delay:0.3s;}
+  .wb:nth-child(5){height:70%;animation-delay:0.4s;}
+  .wb:nth-child(6){height:40%;animation-delay:0.5s;}
+  .wb:nth-child(7){height:85%;animation-delay:0.6s;}
+  .wb:nth-child(8){height:50%;animation-delay:0.7s;}
+  @keyframes wa { 0%,100%{transform:scaleY(0.4);} 50%{transform:scaleY(1);} }
+  .playing .wb{animation-duration:0.55s;opacity:1;}
+  .playing .play-btn{background:linear-gradient(135deg,#FF6B6B,#EE5A5A);box-shadow:0 0 20px rgba(255,107,107,0.4);}
+  .playing .play-btn svg{fill:#fff;margin-left:0;}
+
+  /* ── YOUTUBE IFRAME ── */
+  #yt-frame {
+    position:fixed; width:1px; height:1px;
+    opacity:0; pointer-events:none;
+    left:-9999px; top:-9999px;
+    border:none;
+  }
+
+  /* ── BOTTOM BAR ── */
+  .bottom-bar {
+    padding:20px 48px; display:flex; align-items:center; justify-content:space-between;
+    border-top:1px solid var(--glass-border); font-size:0.78rem; color:rgba(255,255,255,0.3);
+    position:relative; z-index:10;
+  }
+  .bottom-links{display:flex;gap:24px;}
+  .bottom-links a{color:rgba(255,255,255,0.3);text-decoration:none;transition:color 0.3s;}
+  .bottom-links a:hover{color:var(--accent);}
+
+  /* ── PARTICLES ── */
+  .particle{position:fixed;border-radius:50%;pointer-events:none;z-index:0;animation:fp var(--fpd) ease-in-out infinite alternate;}
+  @keyframes fp { 0%{transform:translateY(0) translateX(0);opacity:0.2;} 100%{transform:translateY(-30px) translateX(15px);opacity:0.6;} }
+</style>
+</head>
+<body>
+
+<div id="stars"></div>
+<div class="nebula nebula-1"></div>
+<div class="nebula nebula-2"></div>
+
+<!-- YouTube embed iframe (hidden, autoplay enabled) -->
+<iframe id="yt-frame"
+  src="https://www.youtube.com/embed/V2G8ESoDXm8?autoplay=1&controls=1&loop=0&modestbranding=1&rel=0"
+  allow="autoplay; encrypted-media; fullscreen"
+  style="position:fixed;width:1px;height:1px;opacity:0;pointer-events:none;left:-9999px;top:-9999px;border:none;"
+  loading="lazy">
+</iframe>
+
+<div class="app">
+
+  <nav>
+    <div class="nav-logo">RA</div>
+    <ul class="nav-links">
+      <li><a href="#">Work</a></li>
+      <li><a href="#">About</a></li>
+      <li><a href="#">Skills</a></li>
+      <li><a href="#" class="nav-cta">Contact</a></li>
+    </ul>
+  </nav>
+
+  <div class="hero">
+    <div class="saturn-scene">
+      <!-- Orbit paths -->
+      <div class="orbit-ring or-1"></div>
+      <div class="orbit-ring or-2"></div>
+      <div class="orbit-ring or-3"></div>
+
+      <!-- Ring SVG layer (behind planet) -->
+      <svg class="ring-svg" width="560" height="220" viewBox="0 0 560 220" style="top:50%;left:50%;transform:translate(-50%,-50%) rotateX(78deg);">
+        <!-- Outer ring A -->
+        <ellipse cx="280" cy="110" rx="265" ry="85" fill="none" stroke="rgba(200,169,110,0.15)" stroke-width="8" />
+        <!-- Ring B (brightest, Cassini division) -->
+        <ellipse cx="280" cy="110" rx="240" ry="77" fill="none" stroke="rgba(200,169,110,0.55)" stroke-width="22" />
+        <!-- Inner ring C -->
+        <ellipse cx="280" cy="110" rx="210" ry="67" fill="none" stroke="rgba(200,169,110,0.3)" stroke-width="14" />
+        <!-- Inner ring D -->
+        <ellipse cx="280" cy="110" rx="185" ry="59" fill="none" stroke="rgba(180,140,80,0.2)" stroke-width="10" />
+        <!-- Ring highlights -->
+        <ellipse cx="280" cy="110" rx="240" ry="77" fill="none" stroke="rgba(255,240,180,0.2)" stroke-width="4" />
+      </svg>
+
+      <!-- Saturn planet -->
+      <div class="saturn-wrap">
+        <div class="saturn-body">
+          <div class="polar-cap"></div>
+          <div class="saturn-band band-1"></div>
+          <div class="saturn-band band-2"></div>
+          <div class="saturn-band band-3"></div>
+          <div class="saturn-storm"></div>
+          <div class="saturn-band band-4"></div>
+          <div class="saturn-band band-5"></div>
+          <div class="saturn-band band-6"></div>
+          <div class="saturn-limb"></div>
+          <div class="saturn-spec"></div>
+        </div>
+      </div>
+
+      <!-- Satellites -->
+      <div class="satellite sat-1"><div class="sat-dot"></div></div>
+      <div class="satellite sat-2"><div class="sat-dot" style="width:7px;height:7px;"></div></div>
+      <div class="satellite sat-3"><div class="sat-dot" style="width:11px;height:11px;"></div></div>
+
+      <!-- Meteors -->
+      <div class="meteor met-1"><div class="meteor-body"></div></div>
+      <div class="meteor met-2"><div class="meteor-body"></div></div>
+      <div class="meteor met-3"><div class="meteor-body"></div></div>
+    </div>
+
+    <div class="hero-text">
+      <div class="hero-badge">Portfolio 2026</div>
+      <h1>Building<br><span>Digital</span> Orbit</h1>
+      <p class="hero-desc">
+        Automation workflows — Office integration — Bot systems.<br>
+        Crafting tools that move your work forward.
+      </p>
+
+      <!-- Player card -->
+      <div class="player-card" id="playerCard">
+        <div class="play-btn">
+          <svg id="iconPlay" viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+          <svg id="iconPause" viewBox="0 0 24 24" style="display:none;margin-left:0;">
+            <rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>
+          </svg>
+        </div>
+        <div class="player-info">
+          <div class="player-title">Saturn — SZA</div>
+          <div class="player-sub" id="playerSub">Click to play</div>
+        </div>
+        <div class="player-wave" id="playerWave">
+          <div class="wb"></div><div class="wb"></div><div class="wb"></div>
+          <div class="wb"></div><div class="wb"></div><div class="wb"></div>
+          <div class="wb"></div><div class="wb"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-bar">
+    <span>Reivan Abdee — Automation Engineer</span>
+    <div class="bottom-links">
+      <a href="https://github.com/reivanabdee" target="_blank">GitHub</a>
+      <a href="https://linkedin.com/in/khoirul-abidia-reivan-693891159" target="_blank">LinkedIn</a>
+      <a href="https://instagram.com/reivanabdee" target="_blank">Instagram</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── Stars ──────────────────────────────
+  const starsEl = document.getElementById('stars');
+  for (let i = 0; i < 220; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const sz = Math.random() * 2.5 + 0.5;
+    s.style.cssText = `left:${(Math.random()*100).toFixed(1)}%;top:${(Math.random()*100).toFixed(1)}%;width:${sz}px;height:${sz}px;--dur:${(Math.random()*3+1).toFixed(1)}s;animation-delay:${(Math.random()*3).toFixed(1)}s;`;
+    starsEl.appendChild(s);
+  }
+
+  // ── Floating particles ─────────────────
+  for (let i = 0; i < 15; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const sz = Math.random() * 4 + 1;
+    const r = Math.floor(Math.random()*80+100);
+    const g = Math.floor(Math.random()*80+80);
+    const b = Math.floor(Math.random()*60+60);
+    p.style.cssText = `width:${sz}px;height:${sz}px;background:rgba(${r},${g},${b},0.25);left:${(Math.random()*100).toFixed(1)}%;top:${(Math.random()*100).toFixed(1)}%;--fpd:${(Math.random()*8+6).toFixed(0)}s;animation-delay:${(Math.random()*5).toFixed(1)}s;`;
+    document.body.appendChild(p);
+  }
+
+  // ── Simple iframe src toggle for music ─────────────────
+  const ytFrame = document.getElementById('yt-frame');
+  const card = document.getElementById('playerCard');
+  const playIcon = document.getElementById('iconPlay');
+  const pauseIcon = document.getElementById('iconPause');
+  const sub = document.getElementById('playerSub');
+  let isPlaying = false;
+
+  // Base src without autoplay (for pause state)
+  const baseSrc = 'https://www.youtube.com/embed/V2G8ESoDXm8?controls=1&modestbranding=1&rel=0&enablejsapi=1';
+  // Autoplay src
+  const autoSrc = baseSrc + '&autoplay=1&widget_referrer=http://localhost';
+
+  function toggleMusic() {
+    if (!isPlaying) {
+      // Play: set src with autoplay
+      ytFrame.src = autoSrc;
+      card.classList.add('playing');
+      playIcon.style.display = 'none';
+      pauseIcon.style.display = 'block';
+      sub.textContent = 'Now playing...';
+      isPlaying = true;
+    } else {
+      // Pause: recreate iframe to stop playback
+      const parent = ytFrame.parentNode;
+      const newFrame = document.createElement('iframe');
+      newFrame.id = 'yt-frame';
+      newFrame.src = baseSrc;
+      newFrame.allow = 'autoplay; encrypted-media; fullscreen';
+      newFrame.style = 'position:fixed;width:1px;height:1px;opacity:0;pointer-events:none;left:-9999px;top:-9999px;border:none;';
+      newFrame.loading = 'lazy';
+      parent.replaceChild(newFrame, ytFrame);
+      // update reference
+      window.ytFrame = newFrame;
+
+      card.classList.remove('playing');
+      playIcon.style.display = 'block';
+      pauseIcon.style.display = 'none';
+      sub.textContent = 'Click to play';
+      isPlaying = false;
+    }
+  }
+
+  card.addEventListener('click', toggleMusic);
+</script>
+</body>
+</html>
