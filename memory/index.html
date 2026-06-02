@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reivan × Amel — Our Story</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600&family=Dancing+Script:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Floating hearts background -->
+  <div class="hearts" id="hearts"></div>
+
+  <!-- Music Player -->
+  <div class="music-player" id="musicPlayer">
+    <button class="music-btn" id="musicBtn" aria-label="Play/Pause">
+      <svg class="icon-play" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
+      <svg class="icon-pause" viewBox="0 0 24 24" fill="white" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+    </button>
+    <div class="music-info">
+      <div class="music-title">Cinta Terbaik</div>
+      <div class="music-artist">Cassandra</div>
+    </div>
+  </div>
+  <iframe id="ytFrame" style="display:none" src="https://www.youtube.com/embed/cG9vLDrsLJw?enablejsapi=1" allow="autoplay"></iframe>
+
+  <!-- Navbar -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="#home" class="nav-brand">R × A</a>
+      <ul class="nav-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#story">Story</a></li>
+        <li><a href="#gallery">Gallery</a></li>
+        <li><a href="#quotes">Quotes</a></li>
+        <li><a href="#letter">Letter</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <div class="hero-content">
+      <div class="hero-tag">28 Maret 2026 • Our Beginning</div>
+      <h1 class="hero-title">
+        <span class="name">Reivan</span>
+        <span class="and">×</span>
+        <span class="name">Amel</span>
+      </h1>
+      <p class="hero-sub">A love story, written one memory at a time.</p>
+      <div class="counter">
+        <div class="counter-box">
+          <div class="counter-num" id="days">0</div>
+          <div class="counter-label">Days Together</div>
+        </div>
+        <div class="counter-box">
+          <div class="counter-num" id="hours">0</div>
+          <div class="counter-label">Hours</div>
+        </div>
+        <div class="counter-box">
+          <div class="counter-num" id="minutes">0</div>
+          <div class="counter-label">Minutes</div>
+        </div>
+        <div class="counter-box">
+          <div class="counter-num" id="seconds">0</div>
+          <div class="counter-label">Seconds</div>
+        </div>
+      </div>
+      <a href="#story" class="scroll-cue">
+        <span>scroll</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 13l5 5 5-5M7 7l5 5 5-5"/></svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- STORY / TIMELINE -->
+  <section class="section" id="story">
+    <div class="container">
+      <div class="section-head">
+        <div class="section-tag">our journey</div>
+        <h2 class="section-title">How It All Began</h2>
+        <p class="section-desc">Setiap chapter dari cerita kita, dari yang sederhana sampai yang paling memorable.</p>
+      </div>
+      <div class="timeline">
+        <div class="t-item reveal">
+          <div class="t-dot"></div>
+          <div class="t-card">
+            <div class="t-date">Awalnya...</div>
+            <h3>Pertama Bertemu</h3>
+            <p>Waktu itu belum saling kenal, cuma lewat sekilas. Tapi entah kenapa, ada rasa yang berbeda dari yang lain. Dari situ semuanya bermula.</p>
+          </div>
+        </div>
+        <div class="t-item reveal">
+          <div class="t-dot"></div>
+          <div class="t-card">
+            <div class="t-date">Mulai Dekat</div>
+            <h3>PDKT yang Bikin Gugup</h3>
+            <p>Sering chat, ketawa hal-hal kecil, sampai akhirnya sadar — wait, ini bukan cuma teman biasa. Deg-degan tiap baca notif-nya.</p>
+          </div>
+        </div>
+        <div class="t-item reveal highlight">
+          <div class="t-dot"></div>
+          <div class="t-card">
+            <div class="t-date">28 Maret 2026</div>
+            <h3>💕 Hari Ini Resmi Jadi Kita</h3>
+            <p>Hari yang nggak akan pernah gue lupain. Mulai dari sini, kita nggak cuma "aku dan kamu" — tapi kita.</p>
+          </div>
+        </div>
+        <div class="t-item reveal">
+          <div class="t-dot"></div>
+          <div class="t-card">
+            <div class="t-date">Sekarang</div>
+            <h3>Masih di Sini, Masih Pilih Kamu</h3>
+            <p>Bukan karena nggak ada pilihan lain, tapi karena pilih kamu tuh selalu jadi keputusan terbaik gue.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <section class="section alt" id="gallery">
+    <div class="container">
+      <div class="section-head">
+        <div class="section-tag">our moments</div>
+        <h2 class="section-title">Little Pieces of Us</h2>
+        <p class="section-desc">Kumpulan foto, inget kecil yang nggak akan pernah gue lupain.</p>
+      </div>
+      <div class="gallery">
+        <div class="g-item tall reveal">
+          <div class="g-placeholder">
+            <div class="g-emoji">📸</div>
+            <div class="g-label">First Date</div>
+          </div>
+        </div>
+        <div class="g-item reveal">
+          <div class="g-placeholder">
+            <div class="g-emoji">🌅</div>
+            <div class="g-label">Sunset Bareng</div>
+          </div>
+        </div>
+        <div class="g-item reveal">
+          <div class="g-placeholder">
+            <div class="g-emoji">☕</div>
+            <div class="g-label">Coffee Date</div>
+          </div>
+        </div>
+        <div class="g-item wide reveal">
+          <div class="g-placeholder">
+            <div class="g-emoji">🎂</div>
+            <div class="g-label">Your Birthday</div>
+          </div>
+        </div>
+        <div class="g-item reveal">
+          <div class="g-placeholder">
+            <div class="g-emoji">🌸</div>
+            <div class="g-label">Spring Walk</div>
+          </div>
+        </div>
+        <div class="g-item tall reveal">
+          <div class="g-placeholder">
+            <div class="g-emoji">💑</div>
+            <div class="g-label">We</div>
+          </div>
+        </div>
+        <div class="g-item reveal">
+          <div class="g-placeholder">
+            <div class="g-emoji">🍕</div>
+            <div class="g-label">Makan Bareng</div>
+          </div>
+        </div>
+        <div class="g-item reveal">
+          <div class="g-placeholder">
+            <div class="g-emoji">🌙</div>
+            <div class="g-label">Late Night Talk</div>
+          </div>
+        </div>
+        <div class="g-item wide reveal">
+          <div class="g-placeholder">
+            <div class="g-emoji">✈️</div>
+            <div class="g-label">Trip Pertama</div>
+          </div>
+        </div>
+      </div>
+      <p class="gallery-note">* Nanti tinggal replace placeholder ini sama foto kalian yaa 💕</p>
+    </div>
+  </section>
+
+  <!-- QUOTES -->
+  <section class="section" id="quotes">
+    <div class="container">
+      <div class="section-head">
+        <div class="section-tag">words for you</div>
+        <h2 class="section-title">Little Things I Want to Say</h2>
+      </div>
+      <div class="quotes">
+        <div class="quote-card reveal">
+          <div class="quote-mark">"</div>
+          <p>Kalau ditanya kenapa kamu, jawabannya sederhana — karena nggak ada yang bikin senyum gue selebar kamu.</p>
+        </div>
+        <div class="quote-card reveal">
+          <div class="quote-mark">"</div>
+          <p>Rumah itu bukan tempat. Rumah itu kamu.</p>
+        </div>
+        <div class="quote-card reveal">
+          <div class="quote-mark">"</div>
+          <p>Mungkin banyak yang lebih pinter, lebih ganteng, lebih segala-galanya. Tapi nggak ada yang bisa jadi kamu. Dan itu udah lebih dari cukup.</p>
+        </div>
+        <div class="quote-card reveal">
+          <div class="quote-mark">"</div>
+          <p>Kalau cinta itu bahasa, kamu adalah kalimat yang nggak pernah selesai gue ucapkan.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LETTER -->
+  <section class="section alt" id="letter">
+    <div class="container narrow">
+      <div class="section-head">
+        <div class="section-tag">a letter</div>
+        <h2 class="section-title">For You, Amel</h2>
+      </div>
+      <div class="letter reveal">
+        <p>Hai, kamu.</p>
+        <p>Aku bukan orang yang jago ngomong perasaan. Tapi di sini, lewat tulisan ini, gue mau coba.</p>
+        <p>Makasih udah milih gue. Makasih udah sabar. Makasih udah jadi tempat gue pulang yang paling nyaman.</p>
+        <p>Gue nggak janji bakal sempurna, tapi gue janji bakal terus ada, terus belajar, terus pilih kamu — hari ini, besok, dan seterusnya.</p>
+        <p class="letter-sign">— Reivan, buat kamu yang selalu di hati 💕</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">Reivan × Amel</div>
+      <div class="footer-sub">Since 28 Maret 2026 — and counting 💕</div>
+    </div>
+  </footer>
+
+  <script src="js/script.js"></script>
+</body>
+</html>
